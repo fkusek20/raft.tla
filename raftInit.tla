@@ -21,6 +21,8 @@ Init == /\ messages = [m \in {} |-> 0]
         /\ InitCandidateVars
         /\ InitLeaderVars
         /\ InitLogVars
+        /\ buffer     = [ s \in Server    |-> {} ]
+        /\ payloadMap = [ id \in {}       |-> [ payload |-> CHOOSE v \in Value : TRUE ] ]
         /\ maxc = 0
         /\ leaderCount = [i \in Server |-> 0]
         /\ entryCommitStats = [ idx_term \in {} |-> [ sentCount |-> 0, ackCount |-> 0, committed |-> FALSE ] ] \* Initialize new variable
@@ -37,6 +39,8 @@ MyInit ==
     /\ leaderCount = [s \in Server |-> IF s = r2 THEN 1 ELSE 0]
     /\ log = [s \in Server |-> <<>>]
     /\ matchIndex = [s \in Server |-> [t \in Server |-> 0]]
+    /\ buffer     = [ s \in Server |-> {} ]  \* ADD THIS LINE
+    /\ payloadMap = [ id \in {} |-> [ payload |-> CHOOSE v \in Value : TRUE ] ] \* ADD THIS
     /\ maxc = 0
     /\ messages = [m \in {} |-> 0]  \* Start with empty messages
     /\ nextIndex = [s \in Server |-> [t \in Server |-> 1]]

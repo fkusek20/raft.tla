@@ -123,7 +123,7 @@ vars == <<messages, allLogs, serverVars, candidateVars, leaderVars, logVars, max
 \* important property is that every quorum overlaps with every other.
 Quorum == {i \in SUBSET(Server) : Cardinality(i) * 2 > Cardinality(Server)}
 
-\* The term of the last entry in a log, or 0 if the log is empty.
+\* The term of the last entry in a log, or 0 if the log is empty.A
 LastTerm(xlog) == IF Len(xlog) = 0 THEN 0 ELSE xlog[Len(xlog)].term
 
 \* Helper for Send and Reply. Given a message m and bag of messages, return a

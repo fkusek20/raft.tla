@@ -33,7 +33,11 @@ Next ==
 \*           \/ \E i \in Server : Restart(i)
            \/ \E i,j \in Server : i /= j /\ RequestVote(i, j)
            \/ \E i \in Server : BecomeLeader(i)
-           \/ \E i \in Server, v \in Value : state[i] = Leader /\ ClientRequest(i, v)
+           \/ \E payload \in Value : SwitchSend(payload)
+           \/ \E s \in Server, m \in ValidMessage(messages) :
+                 m.mtype = SwitchRequest /\ SwitchDeliver(s, m)
+           \/ \E i \in Server : LeaderProposeRequest(i)
+           
            \/ \E i \in Server : AdvanceCommitIndex(i)
            \/ \E i,j \in Server : i /= j /\ AppendEntries(i, j)
            \/ \E m \in {msg \in ValidMessage(messages) : \* to visualize possible messages
@@ -48,7 +52,11 @@ MyNext ==
 \*           \/ \E i \in Server : Restart(i)
 \*           \/ \E i,j \in Server : i /= j /\ RequestVote(i, j)
 \*           \/ \E i \in Server : BecomeLeader(i)
-           \/ \E i \in Server, v \in Value : state[i] = Leader /\ ClientRequest(i, v)
+           \/ \E payload \in Value : SwitchSend(payload)
+           
+           \/ \E s \in Server, m \in ValidMessage(messages) :
+                 m.mtype = SwitchRequest /\ SwitchDeliver(s, m)
+           \/ \E i \in Server : LeaderProposeRequest(i)
            \/ \E i \in Server : AdvanceCommitIndex(i)
            \/ \E i,j \in Server : i /= j /\ AppendEntries(i, j)
            \/ \E m \in {msg \in ValidMessage(messages) : \* to visualize possible messages

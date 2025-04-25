@@ -1,0 +1,16 @@
+# Ignore TLA+ Toolbox specific generated directory
+# This is the main one causing 'git add .' to hang
+raftModelPerf.toolbox/
+
+# Ignore TLA+ state files (often large)
+*.st
+
+# Ignore other common TLA+ output/temp folders (optional but good practice)
+states/
+traces/
+*.cfg.bak
+
+# Ignore common OS generated files (optional)
+Thumbs.db
+Desktop.ini
+.DS_Store

@@ -32,6 +32,8 @@ VARIABLE state
 \* The candidate the server voted for in its current term, or
 \* Nil if it hasn't voted for any.
 VARIABLE votedFor
+VARIABLE buffer      \* [ server \in Server |-> SUBSET RequestID ]
+VARIABLE payloadMap   \* [ reqId \in RequestID |-> [ payload: Value ] ]
 serverVars == <<currentTerm, state, votedFor>>
 
 \* A Sequence of log entries. The index into this sequence is the index of the
@@ -65,7 +67,9 @@ VARIABLE matchIndex
 leaderVars == <<nextIndex, matchIndex>>
 
 \* All variables; used for stuttering (asserting state hasn't changed).
-vars == <<messages, serverVars, candidateVars, leaderVars, logVars, instrumentationVars>>
+vars == <<messages, serverVars, candidateVars, leaderVars, logVars, instrumentationVars, buffer, payloadMap>>
+
+
 
 =============================================================================
 \* Created by Ovidiu-Cristian Marcu
