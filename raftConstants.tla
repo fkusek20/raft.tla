@@ -18,8 +18,7 @@ CONSTANTS Nil
 CONSTANTS RequestVoteRequest, RequestVoteResponse,
           AppendEntriesRequest, AppendEntriesResponse
 CONSTANTS
-    SwitchRequest,
-    RequestID
+    switchIndex
 \* for instrumentation to limit model state space
 CONSTANTS MaxClientRequests
 

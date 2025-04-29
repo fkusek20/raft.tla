@@ -74,3 +74,13 @@ The main idea is to stop making the Leader responsible for sending the *big data
 Basically, we separated the slow data transfer from the fast ordering mechanism of Raft!
 
 Date added 25/04/2025 did not do commits before I forgot 
+
+1.  **Modeled the "Switch":** I treated the Switch like a special, non-Raft server in my TLA+ spec, identifying it with a constant `switchIndex`.
+2.  **Switch Stores Full Request:** I designed it so when a client sends a request (value `v`), the Switch stores the *entire thing*, including the payload, in its own log (`log[switchIndex]`). The entry I used looks like `[term |-> 0, value |-> v, payload |-> v]`.
+3.  **Implemented `SwitchClientRequest(v)`:** I created this TLA+ action to simulate the client sending `v` *only* to the Switch. In the action, the Switch updates its log with the new entry and increments the `maxc` counter.
+4.  **Tested in Isolation:** I set up a special test configuration (`MySpecSwitchTest` and `FakeMaxCInv`) in the TLA+ Toolbox. This setup was designed to *only* run my new `SwitchClientRequest` action and check if `maxc` was being incremented correctly against the `MaxClientRequests` limit.
+5.  **Verified the Test:** I ran the model checker with this test setup. It successfully found the expected violation of `FakeMaxCInv`, which proves that my `SwitchClientRequest` action works correctly and increments `maxc` as required for this first step.
+
+**In short:** I successfully modeled the client -> Switch interaction and proved that part works according to the specific instructions for this first stage. I haven't yet connected the Switch to the actual Raft leader or followers in the spec.
+
+Date added 30/04/2025

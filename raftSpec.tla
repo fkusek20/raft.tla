@@ -31,12 +31,8 @@ Receive(m) ==
 Next == 
            \/ \E i \in Server : Timeout(i)
 \*           \/ \E i \in Server : Restart(i)
-           \/ \E i,j \in Server : i /= j /\ RequestVote(i, j)
-           \/ \E i \in Server : BecomeLeader(i)
-           \/ \E payload \in Value : SwitchSend(payload)
-           \/ \E s \in Server, m \in ValidMessage(messages) :
-                 m.mtype = SwitchRequest /\ SwitchDeliver(s, m)
-           \/ \E i \in Server : LeaderProposeRequest(i)
+            \/ \E v \in Value : SwitchClientRequest(v)
+           
            
            \/ \E i \in Server : AdvanceCommitIndex(i)
            \/ \E i,j \in Server : i /= j /\ AppendEntries(i, j)
@@ -52,14 +48,10 @@ MyNext ==
 \*           \/ \E i \in Server : Restart(i)
 \*           \/ \E i,j \in Server : i /= j /\ RequestVote(i, j)
 \*           \/ \E i \in Server : BecomeLeader(i)
-           \/ \E payload \in Value : SwitchSend(payload)
-           
-           \/ \E s \in Server, m \in ValidMessage(messages) :
-                 m.mtype = SwitchRequest /\ SwitchDeliver(s, m)
-           \/ \E i \in Server : LeaderProposeRequest(i)
-           \/ \E i \in Server : AdvanceCommitIndex(i)
-           \/ \E i,j \in Server : i /= j /\ AppendEntries(i, j)
-           \/ \E m \in {msg \in ValidMessage(messages) : \* to visualize possible messages
+            \/ \E v \in Value : SwitchClientRequest(v)
+            \/ \E i \in Server : AdvanceCommitIndex(i)
+            \/ \E i,j \in Server : i /= j /\ AppendEntries(i, j)
+            \/ \E m \in {msg \in ValidMessage(messages) : \* to visualize possible messages
                     msg.mtype \in {AppendEntriesRequest, AppendEntriesResponse}} : Receive(m)
 \*           \/ \E m \in {msg \in ValidMessage(messages) : 
 \*                    msg.mtype \in {AppendEntriesRequest}} : DuplicateMessage(m)
@@ -72,8 +64,13 @@ MyNext ==
 Spec == Init /\ [][Next]_vars
 
 MySpec == MyInit /\ [][MyNext]_vars
+MyNextAddSwitch ==
+    \/ \E v \in Value : SwitchClientRequest(v)
+    
+MySpecSwitchTest == Init /\ [][MyNextAddSwitch]_vars
 
 \* -------------------- Invariants --------------------
+FakeMaxCInv == maxc < MaxClientRequests
 
 MoreThanOneLeaderInv ==
     \A i,j \in Server :
