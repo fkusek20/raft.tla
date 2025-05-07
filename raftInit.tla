@@ -24,30 +24,47 @@ Init == /\ messages = [m \in {} |-> 0]
         /\ maxc = 0
         /\ leaderCount = [i \in Server |-> 0]
         /\ entryCommitStats = [ idx_term \in {} |-> [ sentCount |-> 0, ackCount |-> 0, committed |-> FALSE ] ] \* Initialize new variable
+        /\ entryCommitStats = [idx_term \in {} |-> [sentCount |-> 0, ackCount |-> 0, committed |-> FALSE]]
+        /\ switchBuffer = [ v \in {} |-> [term |-> 0, value |-> v, payload |-> v] ] \* Empty map
+        /\ unorderedRequests = [ s \in Server |-> {} ] \* Empty set for each server (incl. switch)
+        /\ switchSentRecord = [ s \in Server |-> {} ]  \* Empty set for each server (incl. switch)
 
 \* MyInit remains unchanged for the core Raft state, entryCommitStats is handled in Init.
+\* Example using ProfInit structure for MyInit
 MyInit ==
-    LET ServerIds == CHOOSE ids \in [1..3 -> Server] : TRUE
-        r1 == ServerIds[1]
-        r2 == ServerIds[2]
-        r3 == ServerIds[3]
-    IN
-    /\ commitIndex = [s \in Server |-> 0]
-    /\ currentTerm = [s \in Server |-> 2]
-    /\ leaderCount = [s \in Server |-> IF s = r2 THEN 1 ELSE 0]
-    /\ log = [s \in Server |-> <<>>]
-    /\ matchIndex = [s \in Server |-> [t \in Server |-> 0]]
-     \* ADD THIS
-    /\ maxc = 0
-    /\ messages = [m \in {} |-> 0]  \* Start with empty messages
-    /\ nextIndex = [s \in Server |-> [t \in Server |-> 1]]
-    /\ state = [s \in Server |-> IF s = r2 THEN Leader ELSE Follower]
-    /\ votedFor = [s \in Server |-> IF s = r2 THEN Nil ELSE r2]
-    /\ voterLog = [s \in Server |-> IF s = r2 THEN (r1 :> <<>> @@ r3 :> <<>>) ELSE <<>>]
-    /\ votesGranted = [s \in Server |-> IF s = r2 THEN {r1, r3} ELSE {}]
-    /\ votesResponded = [s \in Server |-> IF s = r2 THEN {r1, r3} ELSE {}]
-    /\ entryCommitStats = [ idx_term \in {} |-> [ sentCount |-> 0, ackCount |-> 0, committed |-> FALSE ] ] \* Initialize here too
-
+    \* REMOVED: LET Servers == ... Server == ... switchIndex == ... Value == ...
+    \* REMOVED: IN
+      /\ commitIndex = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+      /\ currentTerm = [r1 |-> 2, r2 |-> 2, r3 |-> 2, r4 |-> 2]
+      /\ entryCommitStats = << >>
+      /\ leaderCount = [r1 |-> 0, r2 |-> 1, r3 |-> 0, r4 |-> 0]
+      /\ log = [r1 |-> <<>>, r2 |-> <<>>, r3 |-> <<>>, r4 |-> <<>>]
+      \* Use the CONSTANT 'Server' directly here
+      /\ matchIndex = [ r1 |-> [s \in Server |-> 0],
+                       r2 |-> [s \in Server |-> 0],
+                       r3 |-> [s \in Server |-> 0],
+                       r4 |-> [s \in Server |-> 0] ]
+      /\ maxc = 0
+      /\ messages = << >>
+      \* Use the CONSTANT 'Server' directly here
+      /\ nextIndex = [ r1 |-> [s \in Server |-> 1],
+                      r2 |-> [s \in Server |-> 1],
+                      r3 |-> [s \in Server |-> 1],
+                      r4 |-> [s \in Server |-> 1] ]
+      \* Use the CONSTANT 'Switch', 'Leader', 'Follower' directly here
+      /\ state = [r1 |-> Switch, r2 |-> Leader, r3 |-> Follower, r4 |-> Follower]
+      \* Use the CONSTANT 'Value' implicitly here
+      /\ switchBuffer = [ v \in {} |-> [term |-> 0, value |-> v, payload |-> v] ] \* Starts empty
+      \* Use the CONSTANT 'Server' directly here
+      /\ unorderedRequests = [ s \in Server |-> {} ] \* Starts empty
+      \* Use the CONSTANT 'Server' directly here
+      /\ switchSentRecord = [ s \in Server |-> {} ]  \* Starts empty
+      \* Use the CONSTANT 'Nil' directly here
+      /\ votedFor = [r1 |-> Nil, r2 |-> Nil, r3 |-> "r2", r4 |-> "r2"]
+      /\ voterLog = [r1 |-> << >>, r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>]
+      /\ votesGranted = [r1 |-> {}, r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}]
+      /\ votesResponded = [r1 |-> {}, r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}]
+    
 \* to be used directly in model Init the value
 \*MyInit2 ==
 \*    /\  commitIndex = (r1 :> 0 @@ r2 :> 0 @@ r3 :> 0)

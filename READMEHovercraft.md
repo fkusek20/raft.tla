@@ -84,3 +84,63 @@ Date added 25/04/2025 did not do commits before I forgot
 **In short:** I successfully modeled the client -> Switch interaction and proved that part works according to the specific instructions for this first stage. I haven't yet connected the Switch to the actual Raft leader or followers in the spec.
 
 Date added 30/04/2025
+
+## Goal
+
+The main goal of this project is to modify a standard Raft TLA+ specification to implement the HovercRaft consensus algorithm variation, based on the design and requirements provided by the professor. HovercRaft aims to improve Raft's performance, especially for large client requests, by separating the ordering of requests from the delivery of the actual data payload.
+
+## What I Did So Far (Implementation Steps)
+
+Following the professor's design notes and examples, I made the following changes to the Raft TLA+ specs:
+
+1.  **Modeled the Switch Component:**
+    *   I designated one of the servers (using the identifier `"r1"` in the model configuration) to act as the non-Raft "Switch" component.
+    *   I added a `Switch` state constant and assigned `state[r1]` to `Switch` in the initial configuration (`MyInit`).
+    *   I defined a `Servers` constant (`{"r2", "r3", "r4"}`) to represent the actual Raft consensus group, excluding the Switch.
+
+2.  **Added HovercRaft Variables:**
+    *   `switchBuffer`: A variable where the Switch component (`r1`) stores the full client request details (`term`, `value`, `payload`) after the Leader acknowledges it.
+    *   `unorderedRequests`: A buffer for *each* server (including the Switch) to store the `Value` (ID) of requests whose payloads have been received from the Switch but haven't been ordered/processed by Raft log replication yet.
+    *   `switchSentRecord`: A record kept by the Switch to track which `<<Value, Term>>` pairs it has already sent to each Raft server, preventing redundant payload deliveries.
+
+3.  **Implemented Core HovercRaft Actions:**
+    *   `SwitchClientRequest(switchIndex, ldr, v)`: Simulates the client request `v` arriving. The *Leader* (`ldr`) tells the *Switch* (`switchIndex`) to store the full request details (using the Leader's current term) in `switchBuffer`. It also increments `maxc`.
+    *   `SwitchClientRequestReplicate(switchIndex, raftSrv, val)`: The *Switch* picks a request ID (`val`) from its `switchBuffer` and replicates it to a specific Raft server (`raftSrv`). This adds `val` to `unorderedRequests[raftSrv]` and updates `switchSentRecord[raftSrv]`. (This models the payload delivery).
+    *   `LeaderIngestHovercRaftRequest(ldr, val)`: The *Leader* (`ldr`) selects a request ID (`val`) known to be in `switchBuffer`. It creates a **metadata-only** entry (`[term |-> currentTerm, value |-> val]`) and appends it to its own Raft log (`log[ldr]`). It also removes `val` from its own `unorderedRequests[ldr]` buffer.
+
+4.  **Modified Raft Actions:**
+    *   `HandleAppendEntriesRequest(flw, ldr, m)`: Modified so that a *Follower* (`flw`) receiving a metadata entry (`[term, val]`) from the Leader (`ldr`) **must** check if `val` is present in its own `unorderedRequests[flw]` buffer. Only if the payload ID is present does it accept the metadata entry into its log (`log[flw]`) and remove the ID from `unorderedRequests[flw]`.
+    *   `AppendEntries(ldr, flw)`: This now sends the *metadata-only* entries present in the leader's log.
+    *   Standard Raft Actions (`Timeout`, `RequestVote`, `BecomeLeader`, `AdvanceCommitIndex`, etc.) and Invariants (`LogInv`, etc.) were scoped to operate only on the `Servers` set (excluding `switchIndex`).
+
+5.  **Corrected Specification:**
+    *   Fixed various TLA+ errors, including ensuring all new variables were correctly handled in `UNCHANGED` clauses for all actions, resolving parse errors related to `LET` vs `==`, and fixing quantifier issues (`\A`, `\E`) over sequences.
+
+## Testing Strategy and Results
+
+To verify the implementation stages, I followed the professor's guidance:
+
+1.  **Test Setup:**
+    *   Created a specific initial state `MyInit` based on the professor's example (r2 starts as Leader, r1 as Switch, etc.).
+    *   Created a next-state relation `MySwitchNext` containing only the HovercRaft actions and the Raft actions needed for log replication and commit (i.e., no leader election actions).
+    *   Defined the main specification for this test as `MySwitchSpec == MyInit /\ [][MySwitchNext]_vars`.
+    *   Configured the TLA+ Toolbox constants (`Server`, `Servers`, `switchIndex`, `Value`, etc.) to match the example.
+
+2.  **Test 1: Payload Replication to Buffers:**
+    *   **Invariant Checked:** `AllServersHaveOneUnorderedRequestInv == \E s \in Servers : Cardinality(unorderedRequests[s]) /= Cardinality(Value)` (or `/= 2`). This invariant is designed to *fail* (be violated) only when *all* Raft servers have received *all* payloads (v1, v2) into their `unorderedRequests` buffer.
+    *   **Result:** **SUCCESS!** The model checker ran `MySwitchSpec` and reported a violation of `AllServersHaveOneUnorderedRequestInv`. The error trace clearly showed the sequence: `SwitchClientRequest` populating `switchBuffer`, followed by `SwitchClientRequestReplicate` running enough times to add both "v1" and "v2" to the `unorderedRequests` buffers of r2, r3, and r4, at which point the invariant correctly became false.
+    *   **Conclusion:** This confirms that the Switch mechanism for buffering requests and replicating their IDs/payloads to the Raft servers' local buffers is working as designed in the model.
+
+## Next Steps
+
+Now that I've confirmed the initial request handling and payload replication simulation is working, the next step is to **verify the end-to-end commit process**:
+
+1.  **Run the same model configuration:** Use the TLA+ Toolbox with the `MySwitchSpec` behavior spec and the same constants.
+2.  **Change Invariant:** Instead of checking `AllServersHaveOneUnorderedRequestInv`, I will **check the commit progress invariant**:
+    ```tla
+    NoRaftServerHasCommittedYet == \A srv \in Servers : commitIndex[srv] = 0
+    ```
+3.  **Expected Outcome:** I expect this `NoRaftServerHasCommittedYet` invariant to be **violated**. The error trace for this violation should show the full sequence: `SwitchClientRequest` -> `SwitchClientRequestReplicate` -> `LeaderIngestHovercRaftRequest` -> `AppendEntries` (metadata) -> `HandleAppendEntriesRequest` (follower logs metadata) -> `HandleAppendEntriesResponse` -> `AdvanceCommitIndex`. This will demonstrate that a request successfully went through the HovercRaft pipeline and was committed by the Raft consensus mechanism.
+4.  **Check Raft Safety:** During this run, I will also keep the standard Raft safety invariants (`LogInv`, `LeaderCompletenessInv`, etc., scoped to `Servers`) checked to ensure the HovercRaft changes haven't broken core Raft guarantees.
+
+Date 07/05/2025

@@ -9,16 +9,19 @@ CONSTANTS Server
 CONSTANTS Value
 
 \* Server states.
-CONSTANTS Follower, Candidate, Leader
+CONSTANTS Follower, Candidate, Leader, Switch
 
 \* A reserved value.
 CONSTANTS Nil
 
+CONSTANTS Servers
+
+CONSTANTS switchIndex
+
 \* Message types:
 CONSTANTS RequestVoteRequest, RequestVoteResponse,
           AppendEntriesRequest, AppendEntriesResponse
-CONSTANTS
-    switchIndex
+
 \* for instrumentation to limit model state space
 CONSTANTS MaxClientRequests
 
