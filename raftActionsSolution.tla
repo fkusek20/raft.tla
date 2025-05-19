@@ -67,11 +67,15 @@ AppendEntries(i, j) ==
                 mcommitIndex   |-> Min({commitIndex[i], entryIndex - 1}),
                 msource        |-> i,
                 mdest          |-> j])
-       /\ entryCommitStats' =
+       /\ entryCommitStats' = \* Modifies sentCount
             IF entryKey \in DOMAIN entryCommitStats /\ ~entryCommitStats[entryKey].committed
             THEN [entryCommitStats EXCEPT ![entryKey].sentCount = @ + 1]
             ELSE entryCommitStats
-    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars>>
+    \* serverVars, candidateVars, leaderVars (nextIndex, matchIndex), logVars (log, commitIndex)
+    \* are potentially part of broader tuples.
+    \* maxc, leaderCount are part of instrumentationVars but not changed here.
+    \* hovercraftVars are not changed.
+    /\ UNCHANGED <<serverVars, candidateVars, nextIndex, matchIndex, log, commitIndex, maxc, leaderCount, hovercraftVars>>
 
 \* Candidate i transitions to leader. (Only Raft Servers become leader)
 BecomeLeader(i) ==
@@ -125,13 +129,12 @@ SwitchClientRequestReplicate(sw, raftSrv, val) ==
 LeaderIngestHovercRaftRequest(ldr, val) ==
     /\ ldr \in Servers
     /\ state[ldr] = Leader
-    /\ val \in DOMAIN switchBuffer
+    /\ val \in DOMAIN switchBuffer      \* The leader must know of this value from the switchBuffer
+    /\ val \in unorderedRequests[ldr] \* NEW: Leader must have it buffered
     /\ LET leaderTerm == currentTerm[ldr]
            metaEntry == [term |-> leaderTerm, value |-> val]
-           \* --- REVISED isNewToLeaderLog (v3) ---
            valueAlreadyExists == \E idx \in 1..Len(log[ldr]) : log[ldr][idx].value = val
            isNewToLeaderLog == ~valueAlreadyExists
-           \* --- END REVISED ---
        IN /\ isNewToLeaderLog
           /\ LET newLeaderLog == Append(log[ldr], metaEntry)
                  newEntryIndex == Len(log[ldr]) + 1
@@ -142,15 +145,16 @@ LeaderIngestHovercRaftRequest(ldr, val) ==
                       IF newEntryIndex > 0
                       THEN entryCommitStats @@ (newEntryKey :> [ sentCount |-> 0, ackCount |-> 0, committed |-> FALSE ])
                       ELSE entryCommitStats
-                /\ UNCHANGED maxc
+                \* maxc was already updated by SwitchClientRequest, so it's unchanged here.
+                \* commitIndex is not changed by this action directly.
           /\ UNCHANGED << messages, serverVars, candidateVars, matchIndex, nextIndex,
-                          commitIndex, leaderCount, switchBuffer, switchSentRecord >>
+                          commitIndex, leaderCount, maxc, switchBuffer, switchSentRecord >>
 
 \* Leader i advances its commitIndex. (Only Raft server leaders)
 AdvanceCommitIndex(i) ==
     /\ i \in Servers
     /\ state[i] = Leader
-    /\ LET Agree(index) == {i} \cup {k \in Servers : matchIndex[i][k] >= index} \* Check agreement among Raft Servers
+    /\ LET Agree(index) == {i} \cup {k \in Servers : matchIndex[i][k] >= index}
            agreeIndexes == {index \in 1..Len(log[i]) :
                                 /\ Agree(index) \in Quorum
                                 /\ log[i][index].term = currentTerm[i]}
@@ -158,11 +162,15 @@ AdvanceCommitIndex(i) ==
            committedIndexes == { k \in Nat : k > commitIndex[i] /\ k <= newCommitIndex }
            keysToUpdate == { key \in DOMAIN entryCommitStats : key[1] \in committedIndexes }
        IN /\ commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]
-          /\ entryCommitStats' = [ key \in DOMAIN entryCommitStats |->
-                                     IF key \in keysToUpdate
-                                     THEN [ entryCommitStats[key] EXCEPT !.committed = TRUE ]
-                                     ELSE entryCommitStats[key] ]
-    /\ UNCHANGED <<messages, serverVars, candidateVars, leaderVars, log, maxc, leaderCount, hovercraftVars>>
+          /\ entryCommitStats' = \* Modifies committed flag
+               [ key \in DOMAIN entryCommitStats |->
+                   IF key \in keysToUpdate
+                   THEN [ entryCommitStats[key] EXCEPT !.committed = TRUE ]
+                   ELSE entryCommitStats[key] ]
+    \* serverVars, candidateVars, leaderVars (nextIndex, matchIndex), log
+    \* maxc, leaderCount are part of instrumentationVars but not changed here.
+    \* hovercraftVars are not changed.
+    /\ UNCHANGED <<messages, serverVars, candidateVars, nextIndex, matchIndex, log, maxc, leaderCount, hovercraftVars>>
 
 ----
 \* Message handlers
@@ -314,7 +322,7 @@ HandleAppendEntriesResponse(i, j, m) ==
                               ELSE <<0, 0>>
              IN /\ nextIndex'  = [nextIndex  EXCEPT ![i][j] = newMatchIndex + 1]
                 /\ matchIndex' = [matchIndex EXCEPT ![i][j] = newMatchIndex]
-                /\ entryCommitStats' =
+                /\ entryCommitStats' = \* Modifies ackCount
                      IF /\ entryKey /= <<0, 0>>
                         /\ entryKey \in DOMAIN entryCommitStats
                         /\ ~entryCommitStats[entryKey].committed
@@ -322,9 +330,12 @@ HandleAppendEntriesResponse(i, j, m) ==
                      ELSE entryCommitStats
        \/ /\ \lnot m.msuccess \* not successful
           /\ nextIndex' = [nextIndex EXCEPT ![i][j] = Max({nextIndex[i][j] - 1, 1})]
-          /\ UNCHANGED <<matchIndex, entryCommitStats>>
+          /\ UNCHANGED <<matchIndex, entryCommitStats>> \* If not successful, matchIndex and entryCommitStats don't change due to this branch.
     /\ Discard(m)
-    /\ UNCHANGED <<serverVars, candidateVars, logVars, instrumentationVars, hovercraftVars>>
+    \* serverVars, candidateVars, logVars (log, commitIndex)
+    \* maxc, leaderCount are part of instrumentationVars but not changed here.
+    \* hovercraftVars are not changed.
+    /\ UNCHANGED <<serverVars, candidateVars, log, commitIndex, maxc, leaderCount, hovercraftVars>>
 
 \* Any RPC with a newer term causes the recipient to advance its term first. (Applies only to Raft Servers)
 UpdateTerm(i, j, m) ==

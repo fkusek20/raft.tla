@@ -19,7 +19,7 @@ MaxTermInv == \A i \in Server : currentTerm[i] <= MaxTerm
 \* is at least the minimum number of followers required to form a majority.
 \* will fail when an entry was sent twice to a follower and no response was acked yet, which is normal
 EntryCommitMessageCountInv ==
-    LET NumFollowers == Cardinality(Server) - 1
+    LET NumFollowers == Cardinality(Servers) - 1
         MinFollowersForMajority == Cardinality(Server) \div 2
     IN \A key \in DOMAIN entryCommitStats :
         LET stats == entryCommitStats[key]
@@ -30,7 +30,7 @@ EntryCommitMessageCountInv ==
 
 \* Check that committed entries received acknowledgments from a majority of followers.
 EntryCommitAckQuorumInv ==
-    LET NumServers == Cardinality(Server)
+    LET NumServers == Cardinality(Servers)
         \* Minimum number of *followers* needed (in addition to the leader)
         \* to reach a majority for committing an entry.
         MinFollowerAcksForMajority == NumServers \div 2

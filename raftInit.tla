@@ -65,6 +65,32 @@ MyInit ==
       /\ votesGranted = [r1 |-> {}, r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}]
       /\ votesResponded = [r1 |-> {}, r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}]
     
+    
+ MyNewInit ==
+    LET leaderNode == CHOOSE l \in Servers : TRUE \* Pick a leader from the CONSTANT Servers
+        otherRaftNodes == Servers \ {leaderNode}
+        TheSwitchId == switchIndex \* Use the CONSTANT switchIndex
+    IN
+    \* No need to assign to Servers' or switchIndex' here
+    /\ commitIndex = [s \in Server |-> 0]
+    /\ currentTerm = [s \in Server |-> 2]
+    /\ leaderCount = [s \in Server |-> IF s = leaderNode THEN 1 ELSE 0]
+    /\ log = [s \in Server |-> <<>>]
+    /\ matchIndex = [s \in Server |-> [t \in Server |-> 0]]
+    /\ maxc = 0
+    /\ messages = [m \in {} |-> 0]
+    /\ nextIndex = [s \in Server |-> [t \in Server |-> 1]]
+    /\ state = [s \in Server |-> IF s = leaderNode THEN Leader
+                               ELSE IF s = TheSwitchId THEN Switch
+                               ELSE Follower]
+    /\ switchBuffer = [v \in {} |-> [term |-> 0, value |-> "", payload |-> ""]]
+    /\ unorderedRequests = [s \in Server |-> {}]
+    /\ switchSentRecord = [s \in Server |-> {}]
+    /\ votedFor = [s \in Server |-> IF s = leaderNode THEN Nil ELSE IF s \in Servers THEN leaderNode ELSE Nil]
+    /\ voterLog = [s \in Server |-> IF s = leaderNode THEN [on \in otherRaftNodes |-> <<>>] ELSE [ign \in {} |-> <<>>] ]
+    /\ votesGranted = [s \in Server |-> IF s = leaderNode THEN otherRaftNodes ELSE {}]
+    /\ votesResponded = [s \in Server |-> IF s = leaderNode THEN otherRaftNodes ELSE {}]
+    /\ entryCommitStats = [ idx_term \in {} |-> [ sentCount |-> 0, ackCount |-> 0, committed |-> FALSE ] ]
 \* to be used directly in model Init the value
 \*MyInit2 ==
 \*    /\  commitIndex = (r1 :> 0 @@ r2 :> 0 @@ r3 :> 0)

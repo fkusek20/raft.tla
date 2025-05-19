@@ -83,6 +83,8 @@ MyHovercRaftSpec == Init /\ [][MySwitchNext]_vars
 
 MySwitchSpec == MyInit /\ [][MySwitchNext]_vars
 
+MySpec == MyNewInit /\ [][MySwitchNext]_vars 
+
 \* Specification for testing HovercRaft mechanics starting from Professor's state
 \* ProfInit == (* ... define the professor's initial state here in raftInit.tla ... *)
 \* ProfHovercRaftSpec == ProfInit /\ [][MySwitchNext]_vars
@@ -96,14 +98,17 @@ MySwitchSpec == MyInit /\ [][MySwitchNext]_vars
 AllServersHaveOneUnorderedRequestInv ==
 
     \E s \in Servers :  Cardinality(unorderedRequests[s]) /= 2
+    
+NoRaftServerHasCommittedYet ==
+    \A srv \in Servers : commitIndex[srv] = 0
 
 \* Fake invariant to check Raft commit progress
 \* Becomes FALSE when the first commit occurs (commitIndex > 0).
-NoRaftServerHasCommittedYet ==
-    \A srv \in Servers : commitIndex[srv] = 0
- 
+
 
 \* ---- Standard Raft Safety Invariants (Scoped to Raft Servers) ----
+
+
 
 MoreThanOneLeaderInv ==
     \A i,j \in Servers :
