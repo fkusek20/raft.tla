@@ -5,13 +5,13 @@
     <stringAttribute key="distributedNetworkInterface" value="172.16.28.1"/>
     <intAttribute key="distributedNodesCount" value="1"/>
     <stringAttribute key="distributedTLC" value="off"/>
-    <intAttribute key="fpIndex" value="109"/>
+    <intAttribute key="fpIndex" value="22"/>
     <intAttribute key="maxHeapSize" value="25"/>
     <stringAttribute key="modelBehaviorInit" value=""/>
     <stringAttribute key="modelBehaviorNext" value=""/>
     <stringAttribute key="modelBehaviorSpec" value="MySpec"/>
     <intAttribute key="modelBehaviorSpecType" value="1"/>
-    <stringAttribute key="modelBehaviorVars" value="messages, matchIndex, log, switchSentRecord, state, leaderCount, entryCommitStats, commitIndex, currentTerm, votesResponded, maxc, nextIndex, votesGranted, switchBuffer, voterLog, votedFor, unorderedRequests"/>
+    <stringAttribute key="modelBehaviorVars" value="messages, matchIndex, log, switchSentRecord, state, netAggSentCache, leaderCount, entryCommitStats, commitIndex, currentTerm, votesResponded, maxc, nextIndex, votesGranted, switchBuffer, voterLog, votedFor, unorderedRequests"/>
     <stringAttribute key="modelComments" value=""/>
     <booleanAttribute key="modelCorrectnessCheckDeadlock" value="false"/>
     <listAttribute key="modelCorrectnessInvariants">
@@ -43,8 +43,10 @@
         <listEntry value="RequestVoteRequest;;RequestVoteRequest;1;0"/>
         <listEntry value="AppendEntriesRequest;;AppendEntriesRequest;1;0"/>
         <listEntry value="Value;;{&quot;v1&quot;, &quot;v2&quot;};0;0"/>
-        <listEntry value="Server;;{&quot;r1&quot;, &quot;r2&quot;, &quot;r3&quot;, &quot;r4&quot;};0;0"/>
+        <listEntry value="Server;;{&quot;r1&quot;, &quot;r2&quot;, &quot;r3&quot;, &quot;r4&quot;, &quot;r5&quot;};0;0"/>
         <listEntry value="MaxClientRequests;;2;0;0"/>
+        <listEntry value="netAggIndex;;&quot;r5&quot;;0;0"/>
+        <listEntry value="NetAgg;;NetAgg;1;0"/>
     </listAttribute>
     <intAttribute key="modelVersion" value="20191005"/>
     <intAttribute key="numberOfWorkers" value="8"/>

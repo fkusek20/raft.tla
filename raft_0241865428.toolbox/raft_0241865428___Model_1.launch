@@ -2,10 +2,10 @@
 <launchConfiguration type="org.lamport.tla.toolbox.tool.tlc.modelCheck">
     <stringAttribute key="configurationName" value="Model_1"/>
     <intAttribute key="distributedFPSetCount" value="0"/>
-    <stringAttribute key="distributedNetworkInterface" value="192.168.137.156"/>
+    <stringAttribute key="distributedNetworkInterface" value="172.16.28.1"/>
     <intAttribute key="distributedNodesCount" value="1"/>
     <stringAttribute key="distributedTLC" value="off"/>
-    <intAttribute key="fpIndex" value="1"/>
+    <intAttribute key="fpIndex" value="100"/>
     <intAttribute key="maxHeapSize" value="25"/>
     <stringAttribute key="modelBehaviorInit" value=""/>
     <stringAttribute key="modelBehaviorNext" value=""/>
@@ -27,6 +27,7 @@
     </listAttribute>
     <listAttribute key="modelCorrectnessProperties"/>
     <intAttribute key="modelEditorOpenTabs" value="10"/>
+    <stringAttribute key="modelExpressionEval" value=""/>
     <stringAttribute key="modelParameterActionConstraint" value=""/>
     <listAttribute key="modelParameterConstants">
         <listEntry value="AppendEntriesResponse;;AppendEntriesResponse;1;0"/>
@@ -43,8 +44,11 @@
         <listEntry value="RequestVoteRequest;;RequestVoteRequest;1;0"/>
         <listEntry value="AppendEntriesRequest;;AppendEntriesRequest;1;0"/>
         <listEntry value="Value;;{&quot;v1&quot;, &quot;v2&quot;};0;0"/>
-        <listEntry value="Server;;{&quot;r1&quot;, &quot;r2&quot;, &quot;r3&quot;, &quot;r4&quot;};0;0"/>
+        <listEntry value="Server;;{&quot;r1&quot;, &quot;r2&quot;, &quot;r3&quot;, &quot;r4&quot;, &quot;r5&quot;};0;0"/>
         <listEntry value="MaxClientRequests;;2;0;0"/>
+        <listEntry value="netAggIndex;;&quot;r5&quot;;0;0"/>
+        <listEntry value="NetAgg;;NetAgg;1;0"/>
+        <listEntry value="LeaderToNetAggOrderRequest;;LeaderToNetAggOrderRequest;1;0"/>
     </listAttribute>
     <stringAttribute key="modelParameterContraint" value="MyConstraint"/>
     <listAttribute key="modelParameterDefinitions"/>

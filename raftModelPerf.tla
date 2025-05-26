@@ -19,7 +19,7 @@ MaxTermInv == \A i \in Server : currentTerm[i] <= MaxTerm
 \* is at least the minimum number of followers required to form a majority.
 \* will fail when an entry was sent twice to a follower and no response was acked yet, which is normal
 EntryCommitMessageCountInv ==
-    LET NumFollowers == Cardinality(Servers) - 1
+    LET NumFollowers == Cardinality(Server) - 1
         MinFollowersForMajority == Cardinality(Server) \div 2
     IN \A key \in DOMAIN entryCommitStats :
         LET stats == entryCommitStats[key]
@@ -30,7 +30,7 @@ EntryCommitMessageCountInv ==
 
 \* Check that committed entries received acknowledgments from a majority of followers.
 EntryCommitAckQuorumInv ==
-    LET NumServers == Cardinality(Servers)
+    LET NumServers == Cardinality(Server)
         \* Minimum number of *followers* needed (in addition to the leader)
         \* to reach a majority for committing an entry.
         MinFollowerAcksForMajority == NumServers \div 2
@@ -40,7 +40,26 @@ EntryCommitAckQuorumInv ==
 
 \* fake inv to obtain a trace
 LeaderCommitted ==
-    \E i \in Server : commitIndex[i] /= 1 \*
+    \E i \in Servers : commitIndex[i] /= 1 \*
+    
+\*FollowersAppendEntry == \E i,j \in Server : i /= j /\ state[i] = Follower /\ state[j] = Follower /\ Len(log[i]) = 1 /\ Len(log[j]) = 1 \* Verifies that at least one follower appends an entry
+
+FollowersAppendEntry == \A i \in Servers: (state[i] = Follower /\ Len(log[i]) > 0) \/ state[i] /= Follower
+
+ServersAppendEntry == \E i \in Servers: Len(log[i]) = 0 /\ state[i] /= Switch
+
+MessageSent == \A i,j \in DOMAIN messages: 
+    \/ Cardinality(DOMAIN messages) < 7 
+\*    \/  /\ Cardinality(DOMAIN messages) >= 2
+\*        /\ j /= i 
+\*        /\  \/ (i.mtype = AppendEntriesResponse /\ messages[i] /= 0) 
+\*            \/ (j.mtype = AppendEntriesResponse /\ messages[j] /= 0) 
+\*\*            \/ (i.mtype = AppendEntriesRequest /\ j.mtype = AppendEntriesRequest)
+
+
+AllMessagesNotConsumed == messages = <<>> \/ Cardinality(DOMAIN messages) < 8 \/ \E m \in DOMAIN messages: messages[m] /= 0
+
+
 
 \*Modify LeaderCommited == \E i \in Server : commitIndex[i] /= 1
 \*and run with MySpec OR

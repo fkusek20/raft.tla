@@ -1,18 +1,21 @@
---------------------------- MODULE full ---------------------------
+-------------------------- MODULE full --------------------------
 
 \* --------------------------- raftConstants ---------------------------
 EXTENDS Naturals, FiniteSets, Sequences, TLC
 
-CONSTANTS Server    \* All entities: e.g., {r1, r2, r3, r4}
+CONSTANTS Server    \* All entities: e.g., {r1, r2, r3, r4, r5}
 CONSTANTS Value     \* e.g., {"v1", "v2"}
-CONSTANTS Follower, Candidate, Leader, Switch \* States
+CONSTANTS Follower, Candidate, Leader, Switch, NetAgg \* States
 CONSTANTS Nil
 
 CONSTANTS Servers   \* Raft group (subset of Server): e.g., {r2, r3, r4}
-CONSTANTS switchIndex \* Specific ID for the switch (from Server): e.g., r1
+CONSTANTS switchIndex \* Specific ID for the switch (from Server)
+CONSTANTS netAggIndex \* Specific ID for the NetAgg (from Server)
 
 CONSTANTS RequestVoteRequest, RequestVoteResponse,
           AppendEntriesRequest, AppendEntriesResponse
+          \* No distinct HovercRaft++ message types used in professor's solution,
+          \* standard AE/AER are re-purposed by changing source/dest.
 
 CONSTANTS MaxClientRequests
 CONSTANTS MaxBecomeLeader
@@ -25,6 +28,7 @@ VARIABLE messages
 VARIABLE switchBuffer
 VARIABLE unorderedRequests
 VARIABLE switchSentRecord
+VARIABLE netAggSentCache \* For NetAgg to track what it sent for a given leader AE message
 VARIABLE leaderCount
 VARIABLE maxc
 VARIABLE entryCommitStats
@@ -49,11 +53,12 @@ VARIABLE nextIndex
 VARIABLE matchIndex
 leaderVars == <<nextIndex, matchIndex>>
 
-hovercraftVars == <<switchBuffer, unorderedRequests, switchSentRecord>>
+hovercraftVars == <<switchBuffer, unorderedRequests, switchSentRecord, netAggSentCache>>
 
 vars == <<messages, serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars>>
 
 \* --------------------------- raftHelpers ---------------------------
+
 
 Quorum == {i \in SUBSET(Servers) : Cardinality(i) * 2 > Cardinality(Servers)}
 
@@ -61,7 +66,7 @@ LastTerm(xlog) == IF Len(xlog) = 0 THEN 0 ELSE xlog[Len(xlog)].term
 
 WithMessage(m, msgs) ==
     IF m \in DOMAIN msgs THEN
-        [msgs EXCEPT ![m] = IF msgs[m] < 2 THEN msgs[m] + 1 ELSE 2 ] \* Allow up to 2 copies for some models
+        [msgs EXCEPT ![m] = IF msgs[m] < 2 THEN msgs[m] + 1 ELSE 2 ]
     ELSE
         msgs @@ (m :> 1)
 
@@ -100,16 +105,16 @@ Committed(i) ==
     ELSE SubSeq(log[i],1,commitIndex[i])
 
 MyConstraint == (\A i \in Servers: currentTerm[i] <= MaxTerm /\ Len(log[i]) <= MaxClientRequests )
-                /\ (\A m \in DOMAIN messages: messages[m] <= 1) \* Ensure at most 1 copy of message
+                /\ (\A m \in DOMAIN messages: messages[m] <= 1)
 
-Symmetry == Permutations(Servers)
+Symmetry == Permutations(Servers) \* Should be Servers if that's the symmetry group
 
 \* --------------------------- raftInit ---------------------------
 
 
 InitHistoryVars == voterLog  = [i \in Server |-> [j \in {} |-> <<>>]]
 InitServerVars == /\ currentTerm = [i \in Server |-> 1]
-                  /\ state       = [i \in Server |-> Follower] \* All start as Follower, even Switch
+                  /\ state       = [i \in Server |-> Follower]
                   /\ votedFor    = [i \in Server |-> Nil]
 InitCandidateVars == /\ votesResponded = [i \in Server |-> {}]
                      /\ votesGranted   = [i \in Server |-> {}]
@@ -129,33 +134,39 @@ Init == /\ messages = [m \in {} |-> 0]
         /\ switchBuffer = [ v \in {} |-> [term |-> 0, value |-> "", payload |-> ""] ]
         /\ unorderedRequests = [ s \in Server |-> {} ]
         /\ switchSentRecord = [ s \in Server |-> {} ]
+        /\ netAggSentCache = [m \in {} |-> {}]
 
-MyInit == \* For MySwitchSpec: Starts with a known leader and switch
-      /\ commitIndex = [s \in Server |-> IF s = switchIndex THEN 0 ELSE 0]
-      /\ currentTerm = [s \in Server |-> IF s = switchIndex THEN 2 ELSE 2] \* Example term
+MyInit == \* For MySwitchSpec: Starts with known roles for HovercRaft++
+      LET leaderNode == CHOOSE l \in Servers : TRUE \* Pick one Raft server to be leader from CONSTANT Servers
+          followers == Servers \ {leaderNode}
+      IN
+      /\ commitIndex = [s \in Server |-> 0]
+      /\ currentTerm = [s \in Server |-> 2] \* Match professor's example term
       /\ entryCommitStats = << >>
-      /\ leaderCount = [s \in Server |-> IF s = (CHOOSE ldr \in Servers: TRUE) THEN 1 ELSE 0] \* Assuming first in Servers is leader for consistency
+      /\ leaderCount = [s \in Server |-> IF s = leaderNode THEN 1 ELSE 0]
       /\ log = [s \in Server |-> <<>>]
       /\ matchIndex = [ s \in Server |-> [t \in Server |-> 0] ]
       /\ maxc = 0
       /\ messages = << >>
       /\ nextIndex = [ s \in Server |-> [t \in Server |-> 1] ]
-      /\ state = [s \in Server |-> IF s = (CHOOSE ldr \in Servers: TRUE) THEN Leader
+      /\ state = [s \in Server |-> IF s = leaderNode THEN Leader
                                    ELSE IF s = switchIndex THEN Switch
-                                   ELSE Follower]
+                                   ELSE IF s = netAggIndex THEN NetAgg
+                                   ELSE IF s \in Servers THEN Follower
+                                   ELSE Follower] \* Default for any other non-assigned server
       /\ switchBuffer = [ v \in {} |-> [term |-> 0, value |-> "", payload |-> ""] ]
       /\ unorderedRequests = [ s \in Server |-> {} ]
       /\ switchSentRecord = [ s \in Server |-> {} ]
-      /\ votedFor = [s \in Server |-> IF s = (CHOOSE ldr \in Servers: TRUE) THEN Nil
-                                      ELSE IF s \in Servers THEN (CHOOSE ldr \in Servers: TRUE)
+      /\ netAggSentCache = [m \in {} |-> {}]
+      /\ votedFor = [s \in Server |-> IF s = leaderNode THEN Nil
+                                      ELSE IF s \in Servers THEN leaderNode
                                       ELSE Nil]
-      /\ voterLog = [s \in Server |-> IF s = (CHOOSE ldr \in Servers: TRUE) THEN [ot \in Servers \ {(CHOOSE ldr \in Servers: TRUE)} |-> <<>>]
+      /\ voterLog = [s \in Server |-> IF s = leaderNode THEN [f \in followers |-> <<>>]
                                       ELSE [ign \in {} |-> <<>>] ]
-      /\ votesGranted = [s \in Server |-> IF s = (CHOOSE ldr \in Servers: TRUE) THEN Servers \ {(CHOOSE ldr \in Servers: TRUE)} ELSE {}]
-      /\ votesResponded = [s \in Server |-> IF s = (CHOOSE ldr \in Servers: TRUE) THEN Servers \ {(CHOOSE ldr \in Servers: TRUE)} ELSE {}]
+      /\ votesGranted = [s \in Server |-> IF s = leaderNode THEN followers ELSE {}]
+      /\ votesResponded = [s \in Server |-> IF s = leaderNode THEN followers ELSE {}]
 
 \* --------------------------- raftActionsSolution ---------------------------
-
 
 ----
 \* Define state transitions
@@ -197,29 +208,30 @@ RequestVote(i, j) ==
              mdest         |-> j])
     /\ UNCHANGED <<serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars>>
 
-AppendEntries(i, j) ==
+\* Standard Raft AppendEntries (e.g., for heartbeats or non-HovercRaft entries if any)
+LeaderStandardAppendEntries(i, j) ==
     /\ i \in Servers
     /\ j \in Servers
     /\ i /= j
     /\ state[i] = Leader
-    /\ nextIndex[i][j] <= Len(log[i])
+    /\ nextIndex[i][j] <= Len(log[i]) \* Or can be > Len(log[i]) for heartbeats
     /\ LET entryIndex == nextIndex[i][j]
-           logEntryFromLeader == log[i][entryIndex]  \* This is already metadata [term, value]
-           entries == << logEntryFromLeader >>      \* Send this METADATA
-           entryKey == <<entryIndex, logEntryFromLeader.term>>
+           entriesToSend == IF nextIndex[i][j] > Len(log[i]) THEN << >> ELSE << log[i][entryIndex] >>
            prevLogIndex == entryIndex - 1
            prevLogTerm == IF prevLogIndex > 0 THEN log[i][prevLogIndex].term ELSE 0
+           entryKey == IF Len(entriesToSend) > 0 THEN <<entryIndex, entriesToSend[1].term>> ELSE <<0,0>>
        IN Send([mtype          |-> AppendEntriesRequest,
                 mterm          |-> currentTerm[i],
                 mprevLogIndex  |-> prevLogIndex,
                 mprevLogTerm   |-> prevLogTerm,
-                mentries       |-> entries,      \* Contains METADATA only
+                mentries       |-> entriesToSend,
                 mlog           |-> log[i],
-                mcommitIndex   |-> Min({commitIndex[i], entryIndex - 1}),
+                mcommitIndex   |-> commitIndex[i],
                 msource        |-> i,
                 mdest          |-> j])
        /\ entryCommitStats' =
-            IF entryKey \in DOMAIN entryCommitStats /\ ~entryCommitStats[entryKey].committed
+            IF Len(entriesToSend) > 0 /\ entryKey \in DOMAIN entryCommitStats /\ ~entryCommitStats[entryKey].committed
+               /\ j \in Servers /\ j /= netAggIndex  \* <<< MODIFIED: Only count for actual Raft followers
             THEN [entryCommitStats EXCEPT ![entryKey].sentCount = @ + 1]
             ELSE entryCommitStats
     /\ UNCHANGED <<serverVars, candidateVars, nextIndex, matchIndex, log, commitIndex, maxc, leaderCount, hovercraftVars>>
@@ -247,9 +259,10 @@ SwitchClientRequest(sw, ldr, v) ==
                      payload |-> v]
        IN /\ switchBuffer' = switchBuffer @@ (v :> entry)
           /\ maxc' = maxc + 1
-          /\ unorderedRequests' = [unorderedRequests EXCEPT ![sw] = unorderedRequests[sw] \union {v}]
+          \* Professor's solution trace doesn't show unorderedRequests[sw] being updated here.
+          \* /\ unorderedRequests' = [unorderedRequests EXCEPT ![sw] = unorderedRequests[sw] \union {v}]
     /\ UNCHANGED << messages, serverVars, candidateVars, leaderVars, logVars,
-                    commitIndex, leaderCount, entryCommitStats, switchSentRecord >>
+                    commitIndex, leaderCount, entryCommitStats, switchSentRecord, unorderedRequests, netAggSentCache >>
 
 SwitchClientRequestReplicate(sw, raftSrv, val) ==
     /\ sw = switchIndex
@@ -262,41 +275,112 @@ SwitchClientRequestReplicate(sw, raftSrv, val) ==
           /\ unorderedRequests' = [unorderedRequests EXCEPT ![raftSrv] = unorderedRequests[raftSrv] \union {val}]
           /\ switchSentRecord' = [switchSentRecord EXCEPT ![raftSrv] = switchSentRecord[raftSrv] \union {pairToRecord}]
     /\ UNCHANGED << messages, serverVars, candidateVars, leaderVars, logVars,
-                    commitIndex, maxc, leaderCount, entryCommitStats, switchBuffer >>
+                    commitIndex, maxc, leaderCount, entryCommitStats, switchBuffer, netAggSentCache>>
 
-LeaderIngestHovercRaftRequest(ldr, val) ==
-    /\ ldr \in Servers
-    /\ state[ldr] = Leader
-    /\ val \in DOMAIN switchBuffer      \* The leader must know of this value from the switchBuffer
-    /\ val \in unorderedRequests[ldr]   \* Leader must also have it in its own buffer (as per stricter design)
-    /\ LET leaderTerm == currentTerm[ldr]
-           metaEntry == [term |-> leaderTerm, value |-> val] \* This is the METADATA entry
-           valueAlreadyExists == \E idx \in 1..Len(log[ldr]) : log[ldr][idx].value = val
-           isNewToLeaderLog == ~valueAlreadyExists
-       IN /\ isNewToLeaderLog
-          /\ LET newLeaderLog == Append(log[ldr], metaEntry) \* Appending METADATA
-                 newEntryIndex == Len(log[ldr]) + 1
-                 newEntryKey == <<newEntryIndex, leaderTerm>>
-             IN /\ log' = [log EXCEPT ![ldr] = newLeaderLog]
-                /\ unorderedRequests' = [unorderedRequests EXCEPT ![ldr] = unorderedRequests[ldr] \ {val}]
-                /\ entryCommitStats' =
-                      IF newEntryIndex > 0
-                      THEN entryCommitStats @@ (newEntryKey :> [ sentCount |-> 0, ackCount |-> 0, committed |-> FALSE ])
-                      ELSE entryCommitStats
-          /\ UNCHANGED << messages, serverVars, candidateVars, matchIndex, nextIndex,
-                          commitIndex, leaderCount, maxc, switchBuffer, switchSentRecord >>
-
-AdvanceCommitIndex(i) ==
+\* Leader 'i' ingests request v, puts FULL entry in its log, sends METADATA AE to NetAgg
+LeaderIngressHovercRaftRequest(i, v) ==
     /\ i \in Servers
     /\ state[i] = Leader
-    /\ LET Agree(index) == {i} \cup {k \in Servers : matchIndex[i][k] >= index}
-           agreeIndexes == {index \in 1..Len(log[i]) :
+    /\ v \in DOMAIN switchBuffer
+    /\ v \in unorderedRequests[i]
+    /\ LET leaderTerm == currentTerm[i]
+           fullEntryFromSwitch == switchBuffer[v]
+           entryForLeaderLog == [term    |-> leaderTerm,
+                                 value   |-> v,
+                                 payload |-> fullEntryFromSwitch.payload]
+           valueAlreadyExistsInLeaderLog == \E idx \in 1..Len(log[i]) : log[i][idx].value = v
+           isNewToLog == ~valueAlreadyExistsInLeaderLog
+
+           metadataEntryForNetAgg == [term |-> entryForLeaderLog.term, value |-> entryForLeaderLog.value]
+           prevLogIndexForNetAggMsg == Len(log[i])
+           prevLogTermForNetAggMsg == LastTerm(log[i])
+           newEntryIndexInLeaderLog == Len(log[i]) + 1
+           newEntryKey == <<newEntryIndexInLeaderLog, entryForLeaderLog.term>>
+
+           msgToNetAgg == [mtype         |-> AppendEntriesRequest,
+                           mterm         |-> leaderTerm,
+                           mprevLogIndex |-> prevLogIndexForNetAggMsg,
+                           mprevLogTerm  |-> prevLogTermForNetAggMsg,
+                           mentries      |-> << metadataEntryForNetAgg >>,
+                           mcommitIndex  |-> commitIndex[i],
+                           msource       |-> i,
+                           mdest         |-> netAggIndex]
+       IN /\ isNewToLog
+          /\ log' = [log EXCEPT ![i] = Append(log[i], entryForLeaderLog)]
+          /\ unorderedRequests' = [unorderedRequests EXCEPT ![i] = unorderedRequests[i] \ {v}]
+          /\ entryCommitStats' =
+                IF newEntryIndexInLeaderLog > 0
+                THEN entryCommitStats @@ (newEntryKey :> [ sentCount |-> 0, ackCount |-> 0, committed |-> FALSE ])
+                ELSE entryCommitStats
+          /\ Send(msgToNetAgg)
+    /\ UNCHANGED << serverVars, candidateVars, nextIndex, matchIndex,
+                    commitIndex, leaderCount, maxc, switchBuffer, switchSentRecord, netAggSentCache >>
+
+\* NetAgg receives AppendEntries metadata from Leader, prepares to replicate it
+NetAggReceivesAppendEntries(na, m) ==
+    /\ na = netAggIndex
+    /\ state[na] = NetAgg
+    /\ m.mdest = na
+    /\ m.msource \in Servers
+    /\ state[m.msource] = Leader
+    /\ m.mtype = AppendEntriesRequest
+    /\ m.mentries /= << >>
+    /\ m \notin DOMAIN netAggSentCache
+    /\ netAggSentCache' = netAggSentCache @@ (m :> {})
+    /\ Discard(m)
+    /\ UNCHANGED << serverVars, candidateVars, leaderVars, logVars, instrumentationVars,
+                    switchBuffer, unorderedRequests, switchSentRecord >>
+
+\* NetAgg (na) sends to Follower (flw) based on original Leader message (origLeaderMsgFromCache)
+NetAggAppendsToFollower(na, flw, origLeaderMsgFromCache) ==
+    /\ na = netAggIndex
+    /\ state[na] = NetAgg
+    /\ flw \in Servers
+    /\ origLeaderMsgFromCache \in DOMAIN netAggSentCache
+    /\ flw \notin netAggSentCache[origLeaderMsgFromCache]
+    /\ LET metadataEntry == Head(origLeaderMsgFromCache.mentries)
+           valToReplicate == metadataEntry.value
+       IN /\ valToReplicate \in unorderedRequests[flw]
+          /\ LET fullEntryFromSwitch == switchBuffer[valToReplicate]
+                 msgToSendToFollower == [
+                    mtype         |-> AppendEntriesRequest,
+                    mterm         |-> origLeaderMsgFromCache.mterm,
+                    mprevLogIndex |-> origLeaderMsgFromCache.mprevLogIndex,
+                    mprevLogTerm  |-> origLeaderMsgFromCache.mprevLogTerm,
+                    mentries      |-> <<fullEntryFromSwitch >>, \* Sends FULL entry
+                    mcommitIndex  |-> origLeaderMsgFromCache.mcommitIndex,
+                    msource       |-> na,
+                    mdest         |-> flw
+                 ]
+             IN Send(msgToSendToFollower)
+                /\ netAggSentCache' = [netAggSentCache EXCEPT ![origLeaderMsgFromCache] = @ \union {flw}]
+                /\ LET leader == origLeaderMsgFromCache.msource
+                       leaderLogEntryIndex == origLeaderMsgFromCache.mprevLogIndex + Len(origLeaderMsgFromCache.mentries)
+                       entryKeyOnLeader == <<leaderLogEntryIndex, metadataEntry.term>>
+                   IN entryCommitStats' =
+                        IF entryKeyOnLeader \in DOMAIN entryCommitStats /\ ~entryCommitStats[entryKeyOnLeader].committed
+                        THEN [entryCommitStats EXCEPT ![entryKeyOnLeader].sentCount = @ + 1]
+                        ELSE entryCommitStats
+    /\ UNCHANGED << serverVars, candidateVars, leaderVars, logVars, maxc, leaderCount,
+                    switchBuffer, unorderedRequests, switchSentRecord >>
+
+\* NetAgg (na) advances Leader's (ldr) commitIndex
+NetAggAdvanceCommitIndex(na) ==
+    /\ na = netAggIndex
+    /\ state[na] = NetAgg
+    /\ \E ldr \in Servers: state[ldr] = Leader \* Ensure there is a leader
+    /\ LET leader == CHOOSE l \in Servers: state[l] = Leader
+           Agree(index) == {leader} \cup {k \in Servers : matchIndex[leader][k] >= index}
+           agreeIndexes == {index \in 1..Len(log[leader]) :
                                 /\ Agree(index) \in Quorum
-                                /\ log[i][index].term = currentTerm[i]}
-           newCommitIndex == IF agreeIndexes /= {} THEN Max(agreeIndexes) ELSE commitIndex[i]
-           committedIndexes == { k \in Nat : k > commitIndex[i] /\ k <= newCommitIndex }
+                                /\ log[leader][index].term = currentTerm[leader]}
+           newLeaderCommitIndex == IF agreeIndexes /= {} THEN Max(agreeIndexes) ELSE commitIndex[leader]
+           changed == newLeaderCommitIndex > commitIndex[leader]
+           committedIndexes == { k \in Nat : /\ k > commitIndex[leader]
+                                             /\ k <= newLeaderCommitIndex }
            keysToUpdate == { key \in DOMAIN entryCommitStats : key[1] \in committedIndexes }
-       IN /\ commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]
+       IN /\ changed \* Only take step if commitIndex actually advances
+          /\ commitIndex' = [commitIndex EXCEPT ![leader] = newLeaderCommitIndex]
           /\ entryCommitStats' =
                [ key \in DOMAIN entryCommitStats |->
                    IF key \in keysToUpdate
@@ -341,33 +425,31 @@ HandleRequestVoteResponse(i, j, m) ==
     /\ Discard(m)
     /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars, instrumentationVars, hovercraftVars>>
 
-HandleAppendEntriesRequest(i, j, m) == \* i is follower, j is leader
+HandleAppendEntriesRequest(i, j, m) == \* i is follower, j is NetAgg or Leader
     LET logOk == \/ m.mprevLogIndex = 0
                  \/ /\ m.mprevLogIndex > 0
                     /\ m.mprevLogIndex <= Len(log[i])
                     /\ m.mprevLogTerm = log[i][m.mprevLogIndex].term
 
-        cacheMissHovercRaft == \* Follower checks if it has the payload info
-          /\ m.mentries /= <<>>
-          /\ LET entryMetaDataFromLeader == m.mentries[1]
-                 v == entryMetaDataFromLeader.value
-                 msgTerm == entryMetaDataFromLeader.term
-             IN
-             \lnot ( /\ v \in unorderedRequests[i]
-                     /\ v \in DOMAIN switchBuffer
-                     /\ switchBuffer[v].term = msgTerm )
+        payloadRequirementMet ==
+            \/ m.mentries = << >>
+            \/ LET entryFromMessage == m.mentries[1]
+                   v == entryFromMessage.value
+               IN v \in unorderedRequests[i]
     IN /\ m.mterm <= currentTerm[i]
-       /\ i \in Servers             \* Follower 'i' must be a Raft consensus server
-       /\ j \in Servers             \* Leader 'j' must be a Raft consensus server
+       /\ i \in Servers
+       /\ (j = netAggIndex \/ j \in Servers) \* Sender is NetAgg or Raft Leader
 
-       /\ \/ /\ \* BRANCH 1: REJECT REQUEST
+       /\ \/ /\ \* REJECT REQUEST
                 \/ m.mterm < currentTerm[i]
                 \/ /\ m.mterm = currentTerm[i]
                    /\ state[i] = Follower
                    /\ \lnot logOk
                 \/ /\ m.mterm = currentTerm[i]
                    /\ state[i] = Follower
-                   /\ cacheMissHovercRaft \* If payload info isn't ready, reject
+                   /\ j = netAggIndex \* If from NetAgg, payload ID must be buffered
+                   /\ m.mentries /= << >>
+                   /\ \lnot payloadRequirementMet
              /\ Reply([mtype           |-> AppendEntriesResponse,
                        mterm           |-> currentTerm[i],
                        msuccess        |-> FALSE,
@@ -377,26 +459,29 @@ HandleAppendEntriesRequest(i, j, m) == \* i is follower, j is leader
                        m)
              /\ UNCHANGED <<serverVars, logVars, unorderedRequests>>
 
-          \/ \* BRANCH 2: RETURN TO FOLLOWER STATE
+          \/ \* RETURN TO FOLLOWER STATE
              /\ m.mterm = currentTerm[i]
              /\ state[i] = Candidate
              /\ state' = [state EXCEPT ![i] = Follower]
              /\ UNCHANGED <<currentTerm, votedFor, logVars, messages, unorderedRequests>>
 
-          \/ \* BRANCH 3: ACCEPT REQUEST
+          \/ \* ACCEPT REQUEST
              /\ m.mterm = currentTerm[i]
              /\ state[i] = Follower
              /\ logOk
-             /\ \lnot cacheMissHovercRaft \* Must NOT be a cache miss to accept
+             /\ ( (j = netAggIndex /\ payloadRequirementMet) \/ \* If from NetAgg, payload must be ready
+                  (j \in Servers) \/                               \* Or if from Leader (e.g. heartbeat, standard Raft AE)
+                  m.mentries = << >> )                             \* Or if it's an empty heartbeat
              /\ LET index == m.mprevLogIndex + 1
-                     newCommitIndexPart == Len(log[i]) + Len(m.mentries) \* Potential new commit based on current log + new entries
-                IN \/ \* SUB-BRANCH 3.1: ALREADY DONE/LOG MATCHES (metadata)
+                    leaderCommit == m.mcommitIndex
+                    maxPossibleCommit == m.mprevLogIndex + Len(m.mentries)
+                    effectiveCommit == Min({leaderCommit, maxPossibleCommit})
+                IN \/ \* ALREADY DONE/LOG MATCHES
                        /\ \/ m.mentries = << >>
                           \/ /\ m.mentries /= << >>
                              /\ Len(log[i]) >= index
-                             /\ log[i][index].term = m.mentries[1].term
-                             /\ log[i][index].value = m.mentries[1].value \* Match term and value (ID)
-                       /\ commitIndex' = [commitIndex EXCEPT ![i] = Max({commitIndex[i], m.mcommitIndex})]
+                             /\ log[i][index] = m.mentries[1] \* Compare full entry
+                       /\ commitIndex' = [commitIndex EXCEPT ![i] = Max({commitIndex[i], effectiveCommit})]
                        /\ Reply([mtype           |-> AppendEntriesResponse,
                                  mterm           |-> currentTerm[i],
                                  msuccess        |-> TRUE,
@@ -406,7 +491,7 @@ HandleAppendEntriesRequest(i, j, m) == \* i is follower, j is leader
                                  m)
                        /\ UNCHANGED <<serverVars, log, unorderedRequests>>
 
-                   \/ \* SUB-BRANCH 3.2: CONFLICT - REMOVE ENTRIES
+                   \/ \* CONFLICT - REMOVE ENTRIES
                        /\ m.mentries /= << >>
                        /\ Len(log[i]) >= index
                        /\ log[i][index].term /= m.mentries[1].term
@@ -419,14 +504,14 @@ HandleAppendEntriesRequest(i, j, m) == \* i is follower, j is leader
                                  m)
                        /\ UNCHANGED <<serverVars, commitIndex, unorderedRequests>>
 
-                   \/ \* SUB-BRANCH 3.3: NO CONFLICT - APPEND **METADATA** ENTRY
+                   \/ \* NO CONFLICT: APPEND FULL ENTRY
                        /\ m.mentries /= << >>
                        /\ Len(log[i]) = m.mprevLogIndex
-                       /\ LET entryMetaDataToAppend == m.mentries[1] \* This is [term, value] from leader
-                              appendedValueID == entryMetaDataToAppend.value
-                          IN log' = [log EXCEPT ![i] = Append(log[i], entryMetaDataToAppend)] \* Append METADATA
+                       /\ LET fullEntryToAppend == m.mentries[1]
+                              appendedValueID == fullEntryToAppend.value
+                          IN log' = [log EXCEPT ![i] = Append(log[i], fullEntryToAppend)]
                              /\ unorderedRequests' = [unorderedRequests EXCEPT ![i] = unorderedRequests[i] \ {appendedValueID}]
-                       /\ commitIndex' = [commitIndex EXCEPT ![i] = Max({commitIndex[i], m.mcommitIndex})]
+                       /\ commitIndex' = [commitIndex EXCEPT ![i] = Max({commitIndex[i], effectiveCommit})]
                        /\ Reply([mtype           |-> AppendEntriesResponse,
                                  mterm           |-> currentTerm[i],
                                  msuccess        |-> TRUE,
@@ -436,43 +521,58 @@ HandleAppendEntriesRequest(i, j, m) == \* i is follower, j is leader
                                  m)
                        /\ UNCHANGED <<serverVars>>
 
-       /\ UNCHANGED <<candidateVars, leaderVars, instrumentationVars, switchBuffer, switchSentRecord>>
+       /\ UNCHANGED <<candidateVars, leaderVars, instrumentationVars,
+                       switchBuffer, switchSentRecord, netAggSentCache>>
 
-HandleAppendEntriesResponse(i, j, m) ==
-    /\ i \in Servers
-    /\ j \in Servers
-    /\ m.mterm = currentTerm[i]
-    /\ \/ /\ m.msuccess
-          /\ LET newMatchIndex == Max({matchIndex[i][j], m.mmatchIndex})
-                 entryKey == IF newMatchIndex > 0 /\ newMatchIndex <= Len(log[i])
-                              THEN <<newMatchIndex, log[i][newMatchIndex].term>>
-                              ELSE <<0, 0>>
-             IN /\ nextIndex'  = [nextIndex  EXCEPT ![i][j] = newMatchIndex + 1]
-                /\ matchIndex' = [matchIndex EXCEPT ![i][j] = newMatchIndex]
-                /\ entryCommitStats' =
-                     IF /\ entryKey /= <<0, 0>>
-                        /\ entryKey \in DOMAIN entryCommitStats
-                        /\ ~entryCommitStats[entryKey].committed
-                     THEN [entryCommitStats EXCEPT ![entryKey].ackCount = @ + 1]
-                     ELSE entryCommitStats
-       \/ /\ \lnot m.msuccess
-          /\ nextIndex' = [nextIndex EXCEPT ![i][j] = Max({nextIndex[i][j] - 1, 1})]
-          /\ UNCHANGED <<matchIndex, entryCommitStats>>
-    /\ Discard(m)
-    /\ UNCHANGED <<serverVars, candidateVars, log, commitIndex, maxc, leaderCount, hovercraftVars>>
+\* Handles responses for BOTH Leader and NetAgg
+HandleAppendEntriesResponse(receiver, sender, m) ==
+    /\ (receiver \in Servers \/ receiver = netAggIndex)
+    /\ sender \in Servers
+    /\ m.mtype = AppendEntriesResponse
+    /\ \E ldr \in Servers: state[ldr] = Leader
+    /\ LET LeaderId == CHOOSE l \in Servers: state[l] = Leader
+           currentLeaderMatchForSender == matchIndex[LeaderId][sender] \* Capture matchIndex *before* this response updates it
+       IN /\ m.mterm = currentTerm[LeaderId]
+          /\ \/ /\ m.msuccess
+                /\ LET newMatchIndex == Max({currentLeaderMatchForSender, m.mmatchIndex})
+                       entryKey == IF m.mmatchIndex > 0 /\ m.mmatchIndex <= Len(log[LeaderId]) \* Use m.mmatchIndex to define the key
+                                    THEN <<m.mmatchIndex, log[LeaderId][m.mmatchIndex].term>>
+                                    ELSE <<0, 0>>
 
+                       \* Condition to increment ackCount:
+                       \* 1. Valid entryKey for an existing, uncommitted entry.
+                       \* 2. This response advances matchIndex for the sender AT LEAST up to this entry's index.
+                       \* 3. The sender did NOT previously match up to this entry's index.
+                       shouldIncrementAck ==
+                           /\ entryKey /= <<0,0>>
+                           /\ entryKey \in DOMAIN entryCommitStats
+                           /\ ~entryCommitStats[entryKey].committed
+                           /\ newMatchIndex >= entryKey[1] \* Sender now matches (or exceeds) this entry's index
+                           /\ currentLeaderMatchForSender < entryKey[1] \* And sender previously did not match this specific entry index
+
+                   IN /\ nextIndex'  = [nextIndex  EXCEPT ![LeaderId][sender] = newMatchIndex + 1]
+                      /\ matchIndex' = [matchIndex EXCEPT ![LeaderId][sender] = newMatchIndex]
+                      /\ entryCommitStats' =
+                           IF shouldIncrementAck
+                           THEN [entryCommitStats EXCEPT ![entryKey].ackCount = @ + 1]
+                           ELSE entryCommitStats
+             \/ /\ \lnot m.msuccess
+                /\ nextIndex' = [nextIndex EXCEPT ![LeaderId][sender] = Max({nextIndex[LeaderId][sender] - 1, 1})]
+                /\ UNCHANGED <<matchIndex, entryCommitStats>>
+          /\ Discard(m)
+          /\ UNCHANGED <<serverVars, candidateVars, log, commitIndex, maxc, leaderCount, hovercraftVars>>
 UpdateTerm(i, j, m) ==
-    /\ i \in Servers
+    /\ i \in Servers \/ i = netAggIndex \* Can be Raft server or NetAgg
     /\ j \in Server
     /\ m.mterm > currentTerm[i]
     /\ m.mterm <= MaxTerm
     /\ currentTerm'    = [currentTerm EXCEPT ![i] = m.mterm]
-    /\ state'          = [state       EXCEPT ![i] = Follower]
-    /\ votedFor'       = [votedFor    EXCEPT ![i] = Nil]
+    /\ state'          = IF i \in Servers THEN [state EXCEPT ![i] = Follower] ELSE state \* NetAgg state doesn't change on term update
+    /\ votedFor'       = IF i \in Servers THEN [votedFor EXCEPT ![i] = Nil] ELSE votedFor
     /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars>>
 
 DropStaleResponse(i, j, m) ==
-    /\ i \in Servers
+    /\ i \in Servers \/ i = netAggIndex
     /\ j \in Server
     /\ m.mterm < currentTerm[i]
     /\ Discard(m)
@@ -492,37 +592,43 @@ DropMessage(m) ==
 Receive(m) ==
     LET i == m.mdest
         j == m.msource
-    IN /\ i \in Servers
-       /\ ( \/ UpdateTerm(i, j, m)
-            \/ /\ m.mtype = RequestVoteRequest
-               /\ HandleRequestVoteRequest(i, j, m)
-            \/ /\ m.mtype = RequestVoteResponse
-               /\ \/ DropStaleResponse(i, j, m)
-                  \/ HandleRequestVoteResponse(i, j, m)
-            \/ /\ m.mtype = AppendEntriesRequest
-               /\ HandleAppendEntriesRequest(i, j, m)
-            \/ /\ m.mtype = AppendEntriesResponse
-               /\ \/ DropStaleResponse(i, j, m)
-                  \/ HandleAppendEntriesResponse(i, j, m)
-          )
+    IN
+       \/ UpdateTerm(i, j, m)
+       \/ /\ m.mtype = RequestVoteRequest            /\ HandleRequestVoteRequest(i, j, m)
+       \/ /\ m.mtype = RequestVoteResponse
+          /\ ( \/ DropStaleResponse(i, j, m) \/ HandleRequestVoteResponse(i, j, m) )
+       \/ /\ m.mtype = AppendEntriesRequest
+          /\ i = netAggIndex /\ j \in Servers /\ NetAggReceivesAppendEntries(i, m)
+       \/ /\ m.mtype = AppendEntriesRequest
+          /\ i \in Servers   /\ (j = netAggIndex \/ j \in Servers) /\ HandleAppendEntriesRequest(i, j, m)
+       \/ /\ m.mtype = AppendEntriesResponse
+          /\ HandleAppendEntriesResponse(i, j, m) \* Generic handler for Leader or NetAgg
 
 Next ==
+       \* --- Standard Raft Leader Election and Timeouts (for Raft Servers) ---
        \/ \E srv \in Servers : Timeout(srv)
        \/ \E srv1, srv2 \in Servers : srv1 /= srv2 /\ RequestVote(srv1, srv2)
        \/ \E srv \in Servers : BecomeLeader(srv)
+
+       \* --- HovercRaft Specific Actions ---
        \/ \E ldr \in Servers, v \in Value :
            state[ldr] = Leader /\ SwitchClientRequest(switchIndex, ldr, v)
+
        \/ \E raftSrv \in Servers, v \in DOMAIN switchBuffer :
            SwitchClientRequestReplicate(switchIndex, raftSrv, v)
+
        \/ \E ldr \in Servers, v \in DOMAIN switchBuffer :
-           state[ldr] = Leader /\ LeaderIngestHovercRaftRequest(ldr, v)
-       \/ \E srv \in Servers : AdvanceCommitIndex(srv)
-       \/ \E srv1, srv2 \in Servers : srv1 /= srv2 /\ AppendEntries(srv1, srv2)
-       \/ \E m \in {msg \in ValidMessage(messages) :
-                msg.mdest \in Servers /\
-                msg.mtype \in {RequestVoteRequest, RequestVoteResponse,
-                               AppendEntriesRequest, AppendEntriesResponse}} :
-           Receive(m)
+           state[ldr] = Leader /\ LeaderIngressHovercRaftRequest(ldr, v)
+
+       \/ \E na \in {netAggIndex}, origLeaderMsg \in DOMAIN netAggSentCache, flw \in Servers : \* CORRECTED
+           na /= flw /\ NetAggAppendsToFollower(na, flw, origLeaderMsg)
+
+       \/ \E na \in {netAggIndex} : state[na]=NetAgg /\ NetAggAdvanceCommitIndex(na) \* CORRECTED, NetAgg triggers leader commit
+
+       \/ \E srv1 \in Servers, srv2 \in Servers : \* Standard AE for heartbeats etc.
+           srv1 /= srv2 /\ state[srv1]=Leader /\ LeaderStandardAppendEntries(srv1, srv2)
+
+       \/ \E m \in ValidMessage(messages) : Receive(m)
 
 MySwitchNext ==
    \/ \E ldr \in Servers, v \in Value :
@@ -530,13 +636,13 @@ MySwitchNext ==
    \/ \E raftSrv \in Servers, v \in DOMAIN switchBuffer :
        SwitchClientRequestReplicate(switchIndex, raftSrv, v)
    \/ \E ldr \in Servers, v \in DOMAIN switchBuffer :
-       state[ldr] = Leader /\ LeaderIngestHovercRaftRequest(ldr, v)
-   \/ \E srv \in Servers : AdvanceCommitIndex(srv)
-   \/ \E srv1, srv2 \in Servers : srv1 /= srv2 /\ AppendEntries(srv1, srv2)
-   \/ \E m \in {msg \in ValidMessage(messages) :
-            msg.mdest \in Servers /\
-            msg.mtype \in {AppendEntriesRequest, AppendEntriesResponse}} :
-       Receive(m)
+       state[ldr] = Leader /\ LeaderIngressHovercRaftRequest(ldr, v)
+   \/ \E na \in {netAggIndex}, origLeaderMsg \in DOMAIN netAggSentCache, flw \in Servers : \* CORRECTED
+       na /= flw /\ NetAggAppendsToFollower(na, flw, origLeaderMsg)
+   \/ \E na \in {netAggIndex} : state[na]=NetAgg /\ NetAggAdvanceCommitIndex(na) \* CORRECTED
+   \/ \E srv1 \in Servers, srv2 \in Servers : \* Standard AE for heartbeats etc.
+       srv1 /= srv2 /\ state[srv1]=Leader /\ LeaderStandardAppendEntries(srv1, srv2)
+   \/ \E m \in ValidMessage(messages) : Receive(m)
 
 Spec == Init /\ [][Next]_vars
 MySpec == MyInit /\ [][MySwitchNext]_vars
@@ -578,9 +684,7 @@ THEOREM Spec => ([]LogInv /\ []LeaderCompletenessInv /\ []LogMatchingInv /\ []Mo
 
 
 MaxCInv == (\E i \in Servers : state[i] = Leader) => maxc <= MaxClientRequests
-
 LeaderCountInv == \A i \in Servers : (state[i] = Leader => leaderCount[i] <= MaxBecomeLeader)
-
 MaxTermInv == \A i \in Servers : currentTerm[i] <= MaxTerm
 
 EntryCommitMessageCountInv ==

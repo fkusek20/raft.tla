@@ -9,132 +9,109 @@
 
 EXTENDS raftActionsSolution
 
-\* Receive a message. (Handles messages intended FOR Raft servers)
+\* Receive a message.
 Receive(m) ==
     LET i == m.mdest
         j == m.msource
-    IN /\ i \in Servers \* Receiver must be a Raft Server
-       /\ ( \* Standard Raft message handling
-            \/ UpdateTerm(i, j, m)
-            \/ /\ m.mtype = RequestVoteRequest
-               /\ HandleRequestVoteRequest(i, j, m)
-            \/ /\ m.mtype = RequestVoteResponse
-               /\ \/ DropStaleResponse(i, j, m)
-                  \/ HandleRequestVoteResponse(i, j, m)
-            \/ /\ m.mtype = AppendEntriesRequest
-               /\ HandleAppendEntriesRequest(i, j, m) \* HovercRaft logic inside
-            \/ /\ m.mtype = AppendEntriesResponse
-               /\ \/ DropStaleResponse(i, j, m)
-                  \/ HandleAppendEntriesResponse(i, j, m)
-          )
+    IN \* Any RPC with a newer term causes the recipient to advance
+       \* its term first. Responses with stale terms are ignored.
+       \/ UpdateTerm(i, j, m)
+       \/ /\ m.mtype = RequestVoteRequest
+          /\ HandleRequestVoteRequest(i, j, m)
+       \/ /\ m.mtype = RequestVoteResponse
+          /\ \/ DropStaleResponse(i, j, m)
+             \/ HandleRequestVoteResponse(i, j, m)
+       \/ /\ m.mtype = AppendEntriesRequest
+          /\ i = netAggIndex
+          /\ NetAggReceivesAppendEntries(i, m)
+       \/ /\ m.mtype = AppendEntriesRequest
+          /\ i /= netAggIndex
+          /\ HandleAppendEntriesRequest(i, j, m)
+       \/ /\ m.mtype = AppendEntriesResponse
+          /\ \/ DropStaleResponse(i, j, m)
+             \/ HandleAppendEntriesResponse(i, j, m)
 
-\* Defines how the variables may transition for the full HovercRaft model.
-Next ==
-       \* --- Standard Raft Leader Election and Timeouts (for Raft Servers) ---
-       \/ \E srv \in Servers : Timeout(srv)
-       \/ \E srv1, srv2 \in Servers : srv1 /= srv2 /\ RequestVote(srv1, srv2)
-       \/ \E srv \in Servers : BecomeLeader(srv)
+\* Defines how the variables may transition.
+Next == 
+           \/ \E i \in Server : Timeout(i)
+\*           \/ \E i \in Server : Restart(i)
+           \/ \E i,j \in Server : i /= j /\ RequestVote(i, j)
+           \/ \E i \in Server : BecomeLeader(i)
+           \/ \E i \in Server, v \in Value : state[i] = Leader /\ SwitchClientRequest(i, v)
+           \/ \E i \in Server : AdvanceCommitIndex(i)
+\*           \/ \E i,j \in Server : i /= j /\ AppendEntries(i, j)
+           \/ \E m \in {msg \in ValidMessage(messages) : \* to visualize possible messages
+                    msg.mtype \in {RequestVoteRequest, RequestVoteResponse, AppendEntriesRequest, AppendEntriesResponse}} : Receive(m)
+\*           \/ \E m \in {msg \in ValidMessage(messages) : 
+\*                    msg.mtype \in {AppendEntriesRequest}} : DuplicateMessage(m)
+\*           \/ \E m \in {msg \in ValidMessage(messages) : 
+\*                    msg.mtype \in {RequestVoteRequest}} : DropMessage(m)
 
-       \* --- HovercRaft Specific Actions ---
-       \/ \E ldr \in Servers, v \in Value :             \* Client sends to system, Leader informs Switch
-           state[ldr] = Leader /\ SwitchClientRequest(switchIndex, ldr, v)
+                  
+MyNext == 
+           \/ \E v \in Value, s \in Servers: state[s] = Leader /\ SwitchClientRequest(s, v)
+           
+           \/ \E v \in DOMAIN switchBuffer, s \in Servers: SwitchClientRequestReplicate(s, v) 
+           
+           \/ \E s \in Servers, v \in DOMAIN switchBuffer: state[s] = Leader  /\ LeaderIngressHovercRaftRequest(s, v)
+           
+\*           \/ \E m \in {msg \in ValidMessage(messages) : 
+\*                    msg.mtype \in {AppendEntriesRequest}} : m.mdest = netAggIndex /\ NetAggReceivesAppendEntries(m.mdest, m)
+           \/ \E i \in Server: AdvanceCommitIndex(i)
+                    
+           \/ \E m \in {msg \in ValidMessage(messages) : 
+                    msg.mtype \in {AppendEntriesRequest}} : Receive(m)
+                 
+           
+           \/ \E i,j \in Servers, m \in DOMAIN netAggSentCache: i /= j  /\ AppendEntries(i, j, m)
+           
+           \/ \E m \in {msg \in ValidMessage(messages) : \* to visualize possible messages
+                    msg.mtype \in {AppendEntriesResponse}} : Receive(m)
+           
+          
 
-       \/ \E raftSrv \in Servers, v \in DOMAIN switchBuffer : \* Switch replicates payload to a Raft server
-           SwitchClientRequestReplicate(switchIndex, raftSrv, v)
-
-       \/ \E ldr \in Servers, v \in DOMAIN switchBuffer :      \* Leader ingests metadata from Switch's knowledge
-           state[ldr] = Leader /\ LeaderIngestHovercRaftRequest(ldr, v)
-
-       \* --- Standard Raft Log Replication and Commit (for Raft Servers) ---
-       \/ \E srv \in Servers : AdvanceCommitIndex(srv)
-       \/ \E srv1, srv2 \in Servers : srv1 /= srv2 /\ AppendEntries(srv1, srv2) \* Sends metadata
-
-       \* --- Handling Raft RPC Messages (for Raft Servers) ---
-       \/ \E m \in {msg \in ValidMessage(messages) :
-                msg.mdest \in Servers /\ \* Ensure Raft servers are destinations for Raft messages
-                msg.mtype \in {RequestVoteRequest, RequestVoteResponse,
-                               AppendEntriesRequest, AppendEntriesResponse}} :
-           Receive(m) \* Receive action already filters for msg.mdest \in Servers
-
-       \* --- Optional: Network Unreliability (for Raft messages) ---
-       \* \/ \E m \in {msg \in ValidMessage(messages) : msg.mtype = AppendEntriesRequest } : DuplicateMessage(m)
-       \* \/ \E m \in {msg \in ValidMessage(messages) : msg.mtype = RequestVoteRequest } : DropMessage(m)
-
-\* Next-state relation for testing HovercRaft actions without leader election
-MySwitchNext ==
-   \/ \E ldr \in Servers, v \in Value :
-       state[ldr] = Leader /\ SwitchClientRequest(switchIndex, ldr, v)
-   \/ \E raftSrv \in Servers, v \in DOMAIN switchBuffer :
-       SwitchClientRequestReplicate(switchIndex, raftSrv, v)
-   \/ \E ldr \in Servers, v \in DOMAIN switchBuffer :
-       state[ldr] = Leader /\ LeaderIngestHovercRaftRequest(ldr, v)
-   \/ \E srv \in Servers : AdvanceCommitIndex(srv)
-   \/ \E srv1, srv2 \in Servers : srv1 /= srv2 /\ AppendEntries(srv1, srv2)
-   \/ \E m \in {msg \in ValidMessage(messages) :
-            msg.mdest \in Servers /\ \* Ensure Raft servers are destinations for Raft messages
-            msg.mtype \in {AppendEntriesRequest, AppendEntriesResponse}} :
-       Receive(m)
-
-\* The main specification using the full Next definition
+\* The specification must start with the initial state and transition according
+\* to Next.
 Spec == Init /\ [][Next]_vars
 
-\* Specification for testing HovercRaft mechanics starting from Init
-MyHovercRaftSpec == Init /\ [][MySwitchNext]_vars
-
-MySwitchSpec == MyInit /\ [][MySwitchNext]_vars
-
-MySpec == MyNewInit /\ [][MySwitchNext]_vars 
-
-\* Specification for testing HovercRaft mechanics starting from Professor's state
-\* ProfInit == (* ... define the professor's initial state here in raftInit.tla ... *)
-\* ProfHovercRaftSpec == ProfInit /\ [][MySwitchNext]_vars
+MySpec == MyInit /\ [][MyNext]_vars
 
 \* -------------------- Invariants --------------------
 
-\* Fake invariant to check HovercRaft payload replication progress
-\* Becomes FALSE when all Raft servers have buffered all payloads.
-
-
-AllServersHaveOneUnorderedRequestInv ==
-
-    \E s \in Servers :  Cardinality(unorderedRequests[s]) /= 2
-    
-NoRaftServerHasCommittedYet ==
-    \A srv \in Servers : commitIndex[srv] = 0
-
-\* Fake invariant to check Raft commit progress
-\* Becomes FALSE when the first commit occurs (commitIndex > 0).
-
-
-\* ---- Standard Raft Safety Invariants (Scoped to Raft Servers) ----
-
-
-
 MoreThanOneLeaderInv ==
-    \A i,j \in Servers :
+    \A i,j \in Server :
         (/\ currentTerm[i] = currentTerm[j]
          /\ state[i] = Leader
          /\ state[j] = Leader)
         => i = j
 
+\* Every (index, term) pair determines a log prefix.
+\* From page 8 of the Raft paper: "If two logs contain an entry with the same index and term, then the logs are identical in all preceding entries."
 LogMatchingInv ==
     \A i, j \in Servers : i /= j =>
         \A n \in 1..min(Len(log[i]), Len(log[j])) :
             log[i][n].term = log[j][n].term =>
             SubSeq(log[i],1,n) = SubSeq(log[j],1,n)
 
+\* The committed entries in every log are a prefix of the
+\* leader's log up to the leader's term (since a next Leader may already be
+\* elected without the old leader stepping down yet)
 LeaderCompletenessInv ==
     \A i \in Servers :
         state[i] = Leader =>
         \A j \in Servers : i /= j =>
             CheckIsPrefix(CommittedTermPrefix(j, currentTerm[i]),log[i])
-
+            
+    
+\* Committed log entries should never conflict between servers
 LogInv ==
     \A i, j \in Servers :
-        \/ CheckIsPrefix(Committed(i),Committed(j))
+        \/ CheckIsPrefix(Committed(i),Committed(j)) 
         \/ CheckIsPrefix(Committed(j),Committed(i))
 
-THEOREM Spec => ([]LogInv /\ []LeaderCompletenessInv /\ []LogMatchingInv /\ []MoreThanOneLeaderInv)
+\* Note that LogInv checks for safety violations across space
+\* This is a key safety invariant and should always be checked
+THEOREM Spec => ([]LogInv /\ []LeaderCompletenessInv /\ []LogMatchingInv /\ []MoreThanOneLeaderInv) 
 
 =============================================================================
 \* Created by Ovidiu-Cristian Marcu

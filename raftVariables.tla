@@ -8,12 +8,6 @@ EXTENDS raftConstants
 \* to another. This is a function mapping Message to Nat.
 VARIABLE messages
 
-VARIABLE switchBuffer
-
-VARIABLE unorderedRequests
-
-VARIABLE switchSentRecord
-
 \* Counter for how many times each server has become leader
 VARIABLE leaderCount
 
@@ -38,7 +32,6 @@ VARIABLE state
 \* The candidate the server voted for in its current term, or
 \* Nil if it hasn't voted for any.
 VARIABLE votedFor
-
 serverVars == <<currentTerm, state, votedFor>>
 
 \* A Sequence of log entries. The index into this sequence is the index of the
@@ -71,15 +64,15 @@ VARIABLE nextIndex
 VARIABLE matchIndex
 leaderVars == <<nextIndex, matchIndex>>
 
+VARIABLES switchBuffer, switchIndex, switchSentRecord, unorderedRequest, netAggIndex, netAggSentCache
+
+hovercraftVars == <<switchBuffer, switchIndex, switchSentRecord, unorderedRequest, netAggSentCache, netAggIndex>>
+
+
+VARIABLE Servers
+
 \* All variables; used for stuttering (asserting state hasn't changed).
-
-hovercraftVars == <<switchBuffer, unorderedRequests, switchSentRecord>>
-
-vars == <<messages, serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars>>
-
-
-
-
+vars == <<messages, serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars, Servers>>
 
 =============================================================================
 \* Created by Ovidiu-Cristian Marcu

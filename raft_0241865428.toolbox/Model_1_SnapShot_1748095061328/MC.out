@@ -1,0 +1,3398 @@
+@!@!@STARTMSG 2262:0 @!@!@
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+@!@!@ENDMSG 2262 @!@!@
+@!@!@STARTMSG 2187:0 @!@!@
+Running breadth-first search Model-Checking with fp 3 and seed 8188983257788389640 with 8 workers on 16 cores with 1163MB heap and 2612MB offheap memory [pid: 29728] (Windows 10 10.0 amd64, AdoptOpenJDK 14.0.1 x86_64, OffHeapDiskFPSet, DiskStateQueue).
+@!@!@ENDMSG 2187 @!@!@
+@!@!@STARTMSG 2220:0 @!@!@
+Starting SANY...
+@!@!@ENDMSG 2220 @!@!@
+Parsing file C:\Users\kusek\Documents\TLA+\raft.tla\raft_0241865428.toolbox\Model_1\MC.tla
+Parsing file C:\Users\kusek\Documents\TLA+\raft.tla\raft_0241865428.toolbox\Model_1\raft_0241865428.tla
+Parsing file C:\Users\kusek\Desktop\Toolbox\TLAToolbox-1.7.4-win32.win32.x86_64\toolbox\plugins\org.lamport.tlatools_1.0.0.202408081326\tla2sany\StandardModules\TLC.tla
+Parsing file C:\Users\kusek\Desktop\Toolbox\TLAToolbox-1.7.4-win32.win32.x86_64\toolbox\plugins\org.lamport.tlatools_1.0.0.202408081326\tla2sany\StandardModules\Naturals.tla
+Parsing file C:\Users\kusek\Desktop\Toolbox\TLAToolbox-1.7.4-win32.win32.x86_64\toolbox\plugins\org.lamport.tlatools_1.0.0.202408081326\tla2sany\StandardModules\FiniteSets.tla
+Parsing file C:\Users\kusek\Desktop\Toolbox\TLAToolbox-1.7.4-win32.win32.x86_64\toolbox\plugins\org.lamport.tlatools_1.0.0.202408081326\tla2sany\StandardModules\Sequences.tla
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module raft_0241865428
+Semantic processing of module MC
+@!@!@STARTMSG 2219:0 @!@!@
+SANY finished.
+@!@!@ENDMSG 2219 @!@!@
+@!@!@STARTMSG 2185:0 @!@!@
+Starting... (2025-05-24 15:57:17)
+@!@!@ENDMSG 2185 @!@!@
+@!@!@STARTMSG 2189:0 @!@!@
+Computing initial states...
+@!@!@ENDMSG 2189 @!@!@
+@!@!@STARTMSG 2190:0 @!@!@
+Finished computing initial states: 1 distinct state generated at 2025-05-24 15:57:18.
+@!@!@ENDMSG 2190 @!@!@
+@!@!@STARTMSG 2200:0 @!@!@
+Progress(17) at 2025-05-24 15:57:21: 241,360 states generated (241,360 s/min), 60,345 distinct states found (60,345 ds/min), 26,727 states left on queue.
+@!@!@ENDMSG 2200 @!@!@
+@!@!@STARTMSG 2110:1 @!@!@
+Invariant LeaderCommitted is violated.
+@!@!@ENDMSG 2110 @!@!@
+@!@!@STARTMSG 2121:1 @!@!@
+The behavior up to this point is:
+@!@!@ENDMSG 2121 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+1: <Initial predicate>
+/\ messages = <<>>
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [r2 |-> <<>>, r3 |-> <<>>, r4 |-> <<>>, r1 |-> <<>>]
+/\ switchSentRecord = [r2 |-> {}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = <<>>
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 0
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = << >>
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+2: <MySwitchNext line 537, col 8 to line 537, col 70 of module raft_0241865428>
+/\ messages = <<>>
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [r2 |-> <<>>, r3 |-> <<>>, r4 |-> <<>>, r1 |-> <<>>]
+/\ switchSentRecord = [r2 |-> {}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = <<>>
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 1
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"]]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {}, r4 |-> {}, r1 |-> {"v1"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+3: <MySwitchNext line 537, col 8 to line 537, col 70 of module raft_0241865428>
+/\ messages = <<>>
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [r2 |-> <<>>, r3 |-> <<>>, r4 |-> <<>>, r1 |-> <<>>]
+/\ switchSentRecord = [r2 |-> {}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = <<>>
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {}, r4 |-> {}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+4: <MySwitchNext line 538, col 7 to line 539, col 60 of module raft_0241865428>
+/\ messages = <<>>
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [r2 |-> <<>>, r3 |-> <<>>, r4 |-> <<>>, r1 |-> <<>>]
+/\ switchSentRecord = [r2 |-> {<<"v1", 2>>}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = <<>>
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {"v1"}, r3 |-> {}, r4 |-> {}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+5: <MySwitchNext line 538, col 7 to line 539, col 60 of module raft_0241865428>
+/\ messages = <<>>
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [r2 |-> <<>>, r3 |-> <<>>, r4 |-> <<>>, r1 |-> <<>>]
+/\ switchSentRecord = [r2 |-> {<<"v1", 2>>}, r3 |-> {<<"v1", 2>>}, r4 |-> {}, r1 |-> {}]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = <<>>
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {"v1"}, r3 |-> {"v1"}, r4 |-> {}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+6: <MySwitchNext line 538, col 7 to line 539, col 60 of module raft_0241865428>
+/\ messages = <<>>
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [r2 |-> <<>>, r3 |-> <<>>, r4 |-> <<>>, r1 |-> <<>>]
+/\ switchSentRecord = [r2 |-> {<<"v1", 2>>}, r3 |-> {<<"v1", 2>>}, r4 |-> {<<"v1", 2>>}, r1 |-> {}]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = <<>>
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {"v1"}, r3 |-> {"v1"}, r4 |-> {"v1"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+7: <MySwitchNext line 538, col 7 to line 539, col 60 of module raft_0241865428>
+/\ messages = <<>>
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [r2 |-> <<>>, r3 |-> <<>>, r4 |-> <<>>, r1 |-> <<>>]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>},
+  r4 |-> {<<"v1", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = <<>>
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {"v1", "v2"}, r3 |-> {"v1"}, r4 |-> {"v1"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+8: <MySwitchNext line 538, col 7 to line 539, col 60 of module raft_0241865428>
+/\ messages = <<>>
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [r2 |-> <<>>, r3 |-> <<>>, r4 |-> <<>>, r1 |-> <<>>]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = <<>>
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {"v1", "v2"}, r3 |-> {"v1", "v2"}, r4 |-> {"v1"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+9: <MySwitchNext line 538, col 7 to line 539, col 60 of module raft_0241865428>
+/\ messages = <<>>
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [r2 |-> <<>>, r3 |-> <<>>, r4 |-> <<>>, r1 |-> <<>>]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = <<>>
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [ r2 |-> {"v1", "v2"},
+  r3 |-> {"v1", "v2"},
+  r4 |-> {"v1", "v2"},
+  r1 |-> {"v1", "v2"} ]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+10: <MySwitchNext line 540, col 7 to line 541, col 67 of module raft_0241865428>
+/\ messages = <<>>
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r3 |-> <<>>,
+  r4 |-> <<>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = (<<1, 2>> :> [sentCount |-> 0, ackCount |-> 0, committed |-> FALSE])
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {"v2"}, r3 |-> {"v1", "v2"}, r4 |-> {"v1", "v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+11: <MySwitchNext line 540, col 7 to line 541, col 67 of module raft_0241865428>
+/\ messages = <<>>
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |-> <<>>,
+  r4 |-> <<>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 0, ackCount |-> 0, committed |-> FALSE] @@
+  <<2, 2>> :> [sentCount |-> 0, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {"v1", "v2"}, r4 |-> {"v1", "v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+12: <MySwitchNext line 543, col 35 to line 543, col 75 of module raft_0241865428>
+/\ messages = ( [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      1 )
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |-> <<>>,
+  r4 |-> <<>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 1, ackCount |-> 0, committed |-> FALSE] @@
+  <<2, 2>> :> [sentCount |-> 0, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {"v1", "v2"}, r4 |-> {"v1", "v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+13: <MySwitchNext line 543, col 35 to line 543, col 75 of module raft_0241865428>
+/\ messages = ( [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      1 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      1 )
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |-> <<>>,
+  r4 |-> <<>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 2, ackCount |-> 0, committed |-> FALSE] @@
+  <<2, 2>> :> [sentCount |-> 0, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {"v1", "v2"}, r4 |-> {"v1", "v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+14: <MySwitchNext line 544, col 7 to line 547, col 17 of module raft_0241865428>
+/\ messages = ( [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r3",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      1 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      1 )
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r4 |-> <<>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 2, ackCount |-> 0, committed |-> FALSE] @@
+  <<2, 2>> :> [sentCount |-> 0, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {"v2"}, r4 |-> {"v1", "v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+15: <MySwitchNext line 544, col 7 to line 547, col 17 of module raft_0241865428>
+/\ messages = ( [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r3",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      1 )
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 1, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r4 |-> <<>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 2, ackCount |-> 1, committed |-> FALSE] @@
+  <<2, 2>> :> [sentCount |-> 0, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 2, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {"v2"}, r4 |-> {"v1", "v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+16: <AdvanceCommitIndex line 296, col 5 to line 311, col 119 of module raft_0241865428>
+/\ messages = ( [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r3",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      1 )
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 1, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r4 |-> <<>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 2, ackCount |-> 1, committed |-> TRUE] @@
+  <<2, 2>> :> [sentCount |-> 0, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 2, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {"v2"}, r4 |-> {"v1", "v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+17: <MySwitchNext line 543, col 35 to line 543, col 75 of module raft_0241865428>
+/\ messages = ( [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r3",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 1,
+    mprevLogTerm |-> 2,
+    mentries |-> <<[term |-> 2, value |-> "v2", payload |-> "v2"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 1 ] :>
+      1 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      1 )
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 1, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r4 |-> <<>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 2, ackCount |-> 1, committed |-> TRUE] @@
+  <<2, 2>> :> [sentCount |-> 1, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 2, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {"v2"}, r4 |-> {"v1", "v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+18: <MySwitchNext line 544, col 7 to line 547, col 17 of module raft_0241865428>
+/\ messages = ( [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r3",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r4",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      1 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 1,
+    mprevLogTerm |-> 2,
+    mentries |-> <<[term |-> 2, value |-> "v2", payload |-> "v2"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 1 ] :>
+      1 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 )
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 1, r4 |-> 0, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r4 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 2, ackCount |-> 1, committed |-> TRUE] @@
+  <<2, 2>> :> [sentCount |-> 1, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 2, r4 |-> 1, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {"v2"}, r4 |-> {"v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+19: <MySwitchNext line 544, col 7 to line 547, col 17 of module raft_0241865428>
+/\ messages = ( [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r3",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r4",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 1,
+    mprevLogTerm |-> 2,
+    mentries |-> <<[term |-> 2, value |-> "v2", payload |-> "v2"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 1 ] :>
+      1 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 )
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 1, r4 |-> 1, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r4 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 2, ackCount |-> 1, committed |-> TRUE] @@
+  <<2, 2>> :> [sentCount |-> 1, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 2, r4 |-> 2, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {"v2"}, r4 |-> {"v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+20: <MySwitchNext line 543, col 35 to line 543, col 75 of module raft_0241865428>
+/\ messages = ( [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r3",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r4",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 1,
+    mprevLogTerm |-> 2,
+    mentries |-> <<[term |-> 2, value |-> "v2", payload |-> "v2"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 1 ] :>
+      1 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 1,
+    mprevLogTerm |-> 2,
+    mentries |-> <<[term |-> 2, value |-> "v2", payload |-> "v2"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 1 ] :>
+      1 )
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 1, r4 |-> 1, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r4 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 2, ackCount |-> 1, committed |-> TRUE] @@
+  <<2, 2>> :> [sentCount |-> 2, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 2, r4 |-> 2, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {"v2"}, r4 |-> {"v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+21: <MySwitchNext line 544, col 7 to line 547, col 17 of module raft_0241865428>
+/\ messages = ( [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r3",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r3",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 2 ] :>
+      1 @@
+  [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r4",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 1,
+    mprevLogTerm |-> 2,
+    mentries |-> <<[term |-> 2, value |-> "v2", payload |-> "v2"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 1,
+    mprevLogTerm |-> 2,
+    mentries |-> <<[term |-> 2, value |-> "v2", payload |-> "v2"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 1 ] :>
+      1 )
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 1, r4 |-> 1, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r4 |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 2, ackCount |-> 1, committed |-> TRUE] @@
+  <<2, 2>> :> [sentCount |-> 2, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 1, r3 |-> 1, r4 |-> 0, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 2, r4 |-> 2, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {}, r4 |-> {"v2"}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2217:4 @!@!@
+22: <MySwitchNext line 544, col 7 to line 547, col 17 of module raft_0241865428>
+/\ messages = ( [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r3",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r3",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 2 ] :>
+      1 @@
+  [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r4",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesResponse,
+    mterm |-> 2,
+    msource |-> "r4",
+    mdest |-> "r2",
+    msuccess |-> TRUE,
+    mmatchIndex |-> 2 ] :>
+      1 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r3",
+    mprevLogIndex |-> 1,
+    mprevLogTerm |-> 2,
+    mentries |-> <<[term |-> 2, value |-> "v2", payload |-> "v2"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 1 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 0,
+    mprevLogTerm |-> 0,
+    mentries |-> <<[term |-> 2, value |-> "v1", payload |-> "v1"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 0 ] :>
+      0 @@
+  [ mtype |-> AppendEntriesRequest,
+    mterm |-> 2,
+    msource |-> "r2",
+    mdest |-> "r4",
+    mprevLogIndex |-> 1,
+    mprevLogTerm |-> 2,
+    mentries |-> <<[term |-> 2, value |-> "v2", payload |-> "v2"]>>,
+    mlog |->
+        << [term |-> 2, value |-> "v1", payload |-> "v1"],
+           [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+    mcommitIndex |-> 1 ] :>
+      0 )
+/\ matchIndex = [ r2 |-> [r2 |-> 0, r3 |-> 1, r4 |-> 1, r1 |-> 0],
+  r3 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r4 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0],
+  r1 |-> [r2 |-> 0, r3 |-> 0, r4 |-> 0, r1 |-> 0] ]
+/\ log = [ r2 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r3 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r4 |->
+      << [term |-> 2, value |-> "v1", payload |-> "v1"],
+         [term |-> 2, value |-> "v2", payload |-> "v2"] >>,
+  r1 |-> <<>> ]
+/\ switchSentRecord = [ r2 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r3 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r4 |-> {<<"v1", 2>>, <<"v2", 2>>},
+  r1 |-> {} ]
+/\ state = [r2 |-> Leader, r3 |-> Follower, r4 |-> Follower, r1 |-> Switch]
+/\ leaderCount = [r2 |-> 1, r3 |-> 0, r4 |-> 0, r1 |-> 0]
+/\ entryCommitStats = ( <<1, 2>> :> [sentCount |-> 2, ackCount |-> 1, committed |-> TRUE] @@
+  <<2, 2>> :> [sentCount |-> 2, ackCount |-> 0, committed |-> FALSE] )
+/\ commitIndex = [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 0]
+/\ currentTerm = [r2 |-> 2, r3 |-> 2, r4 |-> 2, r1 |-> 2]
+/\ votesResponded = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ maxc = 2
+/\ nextIndex = [ r2 |-> [r2 |-> 1, r3 |-> 2, r4 |-> 2, r1 |-> 1],
+  r3 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r4 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1],
+  r1 |-> [r2 |-> 1, r3 |-> 1, r4 |-> 1, r1 |-> 1] ]
+/\ votesGranted = [r2 |-> {"r3", "r4"}, r3 |-> {}, r4 |-> {}, r1 |-> {}]
+/\ switchBuffer = [ v1 |-> [term |-> 2, value |-> "v1", payload |-> "v1"],
+  v2 |-> [term |-> 2, value |-> "v2", payload |-> "v2"] ]
+/\ voterLog = [r2 |-> [r3 |-> <<>>, r4 |-> <<>>], r3 |-> << >>, r4 |-> << >>, r1 |-> << >>]
+/\ votedFor = [r2 |-> Nil, r3 |-> "r2", r4 |-> "r2", r1 |-> Nil]
+/\ unorderedRequests = [r2 |-> {}, r3 |-> {}, r4 |-> {}, r1 |-> {"v1", "v2"}]
+
+@!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2201:0 @!@!@
+The coverage statistics at 2025-05-24 15:57:39
+@!@!@ENDMSG 2201 @!@!@
+@!@!@STARTMSG 2773:0 @!@!@
+<MyInit line 134, col 1 to line 134, col 6 of module raft_0241865428>: 2:2
+@!@!@ENDMSG 2773 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 135, col 7 to line 156, col 138 of module raft_0241865428: 2
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<AdvanceCommitIndex line 295, col 1 to line 295, col 21 of module raft_0241865428>: 52956:422005
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 296, col 8 to line 296, col 20 of module raft_0241865428: 1688018
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 296, col 8 to line 296, col 8 of module raft_0241865428: 1266013
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 296, col 14 to line 296, col 20 of module raft_0241865428: 1266013
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 297, col 8 to line 297, col 24 of module raft_0241865428: 1688018
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 297, col 8 to line 297, col 15 of module raft_0241865428: 1266013
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 297, col 19 to line 297, col 24 of module raft_0241865428: 1266013
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 305, col 14 to line 305, col 70 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 305, col 29 to line 305, col 70 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 305, col 30 to line 305, col 40 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 305, col 49 to line 305, col 69 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 305, col 56 to line 305, col 69 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 302, col 30 to line 302, col 93 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 302, col 33 to line 302, col 50 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 302, col 33 to line 302, col 44 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 299, col 28 to line 301, col 71 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 300, col 33 to line 301, col 70 of module raft_0241865428: 801264
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 300, col 36 to line 300, col 58 of module raft_0241865428: 801264
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 300, col 36 to line 300, col 47 of module raft_0241865428: 801264
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 298, col 28 to line 298, col 79 of module raft_0241865428: 801264
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 298, col 28 to line 298, col 30 of module raft_0241865428: 801264
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||||||||||line 298, col 37 to line 298, col 79 of module raft_0241865428: 801264:1213411
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 298, col 54 to line 298, col 78 of module raft_0241865428: 2403792
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 298, col 44 to line 298, col 50 of module raft_0241865428: 801264
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 300, col 42 to line 300, col 46 of module raft_0241865428: 801264
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 300, col 53 to line 300, col 58 of module raft_0241865428: 801264
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 301, col 36 to line 301, col 70 of module raft_0241865428: 378200
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 299, col 39 to line 299, col 52 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 302, col 49 to line 302, col 50 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 302, col 57 to line 302, col 73 of module raft_0241865428: 356462
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 356462
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 378200
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 421676
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 378200
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 356462
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 302, col 61 to line 302, col 72 of module raft_0241865428: 356462
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||||||line 299, col 28 to line 301, col 71 of module raft_0241865428: 356462:1178076
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 300, col 33 to line 301, col 70 of module raft_0241865428: 684306
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 300, col 36 to line 300, col 58 of module raft_0241865428: 684306
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 300, col 36 to line 300, col 47 of module raft_0241865428: 684306
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 298, col 28 to line 298, col 79 of module raft_0241865428: 684306
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 298, col 28 to line 298, col 30 of module raft_0241865428: 684306
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||||||||||line 298, col 37 to line 298, col 79 of module raft_0241865428: 684306:1096453
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 298, col 54 to line 298, col 78 of module raft_0241865428: 2052918
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 298, col 44 to line 298, col 50 of module raft_0241865428: 684306
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 300, col 42 to line 300, col 46 of module raft_0241865428: 684306
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 300, col 53 to line 300, col 58 of module raft_0241865428: 684306
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 301, col 36 to line 301, col 70 of module raft_0241865428: 378200
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 299, col 39 to line 299, col 52 of module raft_0241865428: 356462
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 302, col 80 to line 302, col 93 of module raft_0241865428: 65543
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 306, col 14 to line 310, col 47 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 311, col 8 to line 311, col 119 of module raft_0241865428: 422005
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<MySwitchNext line 535, col 1 to line 535, col 12 of module raft_0241865428 (537 8 537 70)>: 4:6060
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 537, col 8 to line 537, col 26 of module raft_0241865428: 2538143
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 537, col 8 to line 537, col 17 of module raft_0241865428: 2532083
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 537, col 21 to line 537, col 26 of module raft_0241865428: 2532083
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 240, col 8 to line 240, col 23 of module raft_0241865428: 850089
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 240, col 8 to line 240, col 9 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 240, col 13 to line 240, col 23 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 241, col 8 to line 241, col 22 of module raft_0241865428: 850089
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 241, col 8 to line 241, col 10 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 241, col 16 to line 241, col 22 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 242, col 8 to line 242, col 26 of module raft_0241865428: 850089
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 242, col 8 to line 242, col 17 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 242, col 21 to line 242, col 26 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 243, col 8 to line 243, col 18 of module raft_0241865428: 850089
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 243, col 8 to line 243, col 8 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 243, col 14 to line 243, col 18 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 244, col 8 to line 244, col 31 of module raft_0241865428: 6060
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 244, col 8 to line 244, col 11 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 244, col 15 to line 244, col 31 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 245, col 8 to line 245, col 35 of module raft_0241865428: 18177
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 245, col 8 to line 245, col 8 of module raft_0241865428: 12117
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 245, col 17 to line 245, col 35 of module raft_0241865428: 12117
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 250, col 11 to line 252, col 101 of module raft_0241865428: 6060
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 253, col 8 to line 254, col 83 of module raft_0241865428: 6060
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 537, col 51 to line 537, col 61 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 537, col 64 to line 537, col 66 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 537, col 69 to line 537, col 69 of module raft_0241865428: 844029
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<MySwitchNext line 535, col 1 to line 535, col 12 of module raft_0241865428 (538 7 539 60)>: 38518:709624
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 257, col 8 to line 257, col 23 of module raft_0241865428: 3223528
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 257, col 8 to line 257, col 9 of module raft_0241865428: 2513904
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 257, col 13 to line 257, col 23 of module raft_0241865428: 2513904
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 258, col 8 to line 258, col 26 of module raft_0241865428: 3223528
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 258, col 8 to line 258, col 14 of module raft_0241865428: 2513904
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 258, col 20 to line 258, col 26 of module raft_0241865428: 2513904
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 259, col 8 to line 259, col 34 of module raft_0241865428: 3223528
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 259, col 8 to line 259, col 10 of module raft_0241865428: 2513904
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 259, col 16 to line 259, col 34 of module raft_0241865428: 2513904
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 263, col 14 to line 263, col 58 of module raft_0241865428: 3223528
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 263, col 14 to line 263, col 25 of module raft_0241865428: 2513904
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 263, col 34 to line 263, col 58 of module raft_0241865428: 2513904
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 264, col 14 to line 264, col 113 of module raft_0241865428: 709624
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 265, col 14 to line 265, col 119 of module raft_0241865428: 709624
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 266, col 8 to line 267, col 85 of module raft_0241865428: 709624
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 539, col 37 to line 539, col 47 of module raft_0241865428: 2513904
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 539, col 50 to line 539, col 56 of module raft_0241865428: 2513904
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 539, col 59 to line 539, col 59 of module raft_0241865428: 2513904
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 538, col 22 to line 538, col 28 of module raft_0241865428: 422013
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 538, col 37 to line 538, col 55 of module raft_0241865428: 422013
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<MySwitchNext line 535, col 1 to line 535, col 12 of module raft_0241865428 (540 7 541 67)>: 4169:17307
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 541, col 8 to line 541, col 26 of module raft_0241865428: 2531175
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 541, col 8 to line 541, col 17 of module raft_0241865428: 2513868
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 541, col 21 to line 541, col 26 of module raft_0241865428: 2513868
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 270, col 8 to line 270, col 22 of module raft_0241865428: 855263
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 270, col 8 to line 270, col 10 of module raft_0241865428: 837956
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 270, col 16 to line 270, col 22 of module raft_0241865428: 837956
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 271, col 8 to line 271, col 26 of module raft_0241865428: 855263
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 271, col 8 to line 271, col 17 of module raft_0241865428: 837956
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 271, col 21 to line 271, col 26 of module raft_0241865428: 837956
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 272, col 8 to line 272, col 34 of module raft_0241865428: 855263
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 272, col 8 to line 272, col 10 of module raft_0241865428: 837956
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 272, col 16 to line 272, col 34 of module raft_0241865428: 837956
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 273, col 8 to line 273, col 37 of module raft_0241865428: 855263
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 273, col 8 to line 273, col 10 of module raft_0241865428: 837956
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 273, col 16 to line 273, col 37 of module raft_0241865428: 837956
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 281, col 32 to line 281, col 50 of module raft_0241865428: 34614
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 281, col 33 to line 281, col 50 of module raft_0241865428: 17307
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 280, col 34 to line 280, col 88 of module raft_0241865428: 17307
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 280, col 64 to line 280, col 88 of module raft_0241865428: 17233
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 280, col 45 to line 280, col 60 of module raft_0241865428: 17307
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 286, col 17 to line 291, col 43 of module raft_0241865428: 17307
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 292, col 14 to line 293, col 91 of module raft_0241865428: 17307
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 541, col 61 to line 541, col 63 of module raft_0241865428: 837956
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 541, col 66 to line 541, col 66 of module raft_0241865428: 837956
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 540, col 18 to line 540, col 24 of module raft_0241865428: 422007
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 540, col 33 to line 540, col 51 of module raft_0241865428: 422007
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<MySwitchNext line 535, col 1 to line 535, col 12 of module raft_0241865428 (543 35 543 75)>: 174376:800903
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 543, col 35 to line 543, col 46 of module raft_0241865428: 4598925
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 543, col 35 to line 543, col 38 of module raft_0241865428: 3798022
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 543, col 43 to line 543, col 46 of module raft_0241865428: 3798022
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 202, col 8 to line 202, col 20 of module raft_0241865428: 3332919
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 202, col 8 to line 202, col 8 of module raft_0241865428: 2532016
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 202, col 14 to line 202, col 20 of module raft_0241865428: 2532016
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 203, col 8 to line 203, col 20 of module raft_0241865428: 3332919
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 203, col 8 to line 203, col 8 of module raft_0241865428: 2532016
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 203, col 14 to line 203, col 20 of module raft_0241865428: 2532016
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 204, col 8 to line 204, col 13 of module raft_0241865428: 3332919
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 204, col 8 to line 204, col 8 of module raft_0241865428: 2532016
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 204, col 13 to line 204, col 13 of module raft_0241865428: 2532016
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 205, col 8 to line 205, col 24 of module raft_0241865428: 3332919
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 205, col 8 to line 205, col 15 of module raft_0241865428: 2532016
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 205, col 19 to line 205, col 24 of module raft_0241865428: 2532016
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 206, col 8 to line 206, col 37 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 206, col 8 to line 206, col 22 of module raft_0241865428: 844006
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 206, col 27 to line 206, col 37 of module raft_0241865428: 844006
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 75, col 12 to line 75, col 47 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 75, col 24 to line 75, col 47 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 64, col 5 to line 67, col 24 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 64, col 8 to line 64, col 24 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 65, col 9 to line 65, col 68 of module raft_0241865428: 502786
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 67, col 9 to line 67, col 24 of module raft_0241865428: 298117
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 75, col 39 to line 75, col 46 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 213, col 16 to line 221, col 37 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 213, col 17 to line 213, col 55 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 214, col 17 to line 214, col 49 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 215, col 17 to line 215, col 47 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 216, col 36 to line 216, col 46 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 212, col 27 to line 212, col 83 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 212, col 30 to line 212, col 45 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 212, col 52 to line 212, col 76 of module raft_0241865428: 256933
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 217, col 17 to line 217, col 42 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 218, col 17 to line 218, col 41 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 219, col 36 to line 219, col 72 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 79, col 11 to line 79, col 46 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 79, col 28 to line 79, col 46 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 79, col 41 to line 79, col 46 of module raft_0241865428: 1161682
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 79, col 37 to line 79, col 37 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 79, col 24 to line 79, col 24 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||line 219, col 40 to line 219, col 71 of module raft_0241865428: 800903:2763488
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 220, col 17 to line 220, col 36 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 221, col 17 to line 221, col 36 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 222, col 11 to line 225, col 33 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 223, col 13 to line 225, col 33 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 223, col 16 to line 223, col 92 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 224, col 18 to line 224, col 72 of module raft_0241865428: 513712
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 225, col 18 to line 225, col 33 of module raft_0241865428: 287191
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 226, col 8 to line 226, col 122 of module raft_0241865428: 800903
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 543, col 65 to line 543, col 68 of module raft_0241865428: 2532016
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 543, col 71 to line 543, col 74 of module raft_0241865428: 2532016
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<MySwitchNext line 535, col 1 to line 535, col 12 of module raft_0241865428 (544 7 547 17)>: 455282:1156437
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 503, col 11 to line 503, col 23 of module raft_0241865428: 2312867
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 503, col 11 to line 503, col 11 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 503, col 17 to line 503, col 23 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 473, col 8 to line 473, col 20 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 474, col 8 to line 474, col 19 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 475, col 8 to line 475, col 31 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 477, col 8 to line 477, col 60 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 478, col 8 to line 478, col 61 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 479, col 8 to line 479, col 56 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 480, col 8 to line 480, col 102 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 504, col 27 to line 504, col 27 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 504, col 30 to line 504, col 30 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 505, col 19 to line 505, col 46 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 323, col 24 to line 323, col 61 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 324, col 24 to line 324, col 41 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 77, col 29 to line 77, col 96 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 332, col 11 to line 332, col 115 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 507, col 19 to line 507, col 47 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 76, col 15 to line 76, col 53 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 487, col 8 to line 487, col 104 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 338, col 8 to line 339, col 57 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 341, col 14 to line 342, col 59 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 343, col 14 to line 344, col 59 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 346, col 14 to line 346, col 49 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 76, col 15 to line 76, col 53 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 348, col 8 to line 348, col 99 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 510, col 19 to line 510, col 48 of module raft_0241865428: 1876688
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 510, col 19 to line 510, col 25 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 510, col 29 to line 510, col 48 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 365, col 11 to line 365, col 35 of module raft_0241865428: 720251
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 365, col 11 to line 365, col 17 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 365, col 22 to line 365, col 35 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 366, col 11 to line 366, col 23 of module raft_0241865428: 1440509
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 366, col 11 to line 366, col 11 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 366, col 17 to line 366, col 23 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 367, col 11 to line 367, col 23 of module raft_0241865428: 1440509
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 367, col 11 to line 367, col 11 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 367, col 17 to line 367, col 23 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 370, col 20 to line 370, col 43 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 371, col 23 to line 371, col 46 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 372, col 23 to line 372, col 41 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 373, col 23 to line 373, col 33 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 373, col 29 to line 373, col 33 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 351, col 18 to line 354, col 68 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 351, col 21 to line 351, col 39 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 352, col 21 to line 354, col 68 of module raft_0241865428: 184263
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 374, col 23 to line 374, col 46 of module raft_0241865428: 1282269
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 374, col 23 to line 374, col 29 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 374, col 33 to line 374, col 46 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 375, col 23 to line 375, col 41 of module raft_0241865428: 1282269
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 375, col 23 to line 375, col 30 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 375, col 34 to line 375, col 41 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 357, col 14 to line 357, col 31 of module raft_0241865428: 1282269
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 357, col 14 to line 357, col 23 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 357, col 28 to line 357, col 31 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 362, col 14 to line 364, col 56 of module raft_0241865428: 1282269
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 362, col 22 to line 364, col 54 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 362, col 25 to line 362, col 50 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 363, col 25 to line 363, col 49 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 364, col 25 to line 364, col 54 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 77, col 29 to line 77, col 96 of module raft_0241865428: 562011
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 77, col 41 to line 77, col 96 of module raft_0241865428: 562011
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 70, col 5 to line 73, col 12 of module raft_0241865428: 562011
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 77, col 65 to line 77, col 95 of module raft_0241865428: 562011
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 64, col 5 to line 67, col 24 of module raft_0241865428: 562011
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 64, col 8 to line 64, col 24 of module raft_0241865428: 562011
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 65, col 9 to line 65, col 68 of module raft_0241865428: 310530
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 67, col 9 to line 67, col 24 of module raft_0241865428: 251481
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 77, col 87 to line 77, col 94 of module raft_0241865428: 562011
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 377, col 23 to line 382, col 45 of module raft_0241865428: 562011
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 384, col 17 to line 384, col 68 of module raft_0241865428: 562011
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 387, col 17 to line 387, col 40 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 388, col 17 to line 388, col 36 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 389, col 17 to line 389, col 55 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 390, col 17 to line 390, col 89 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 393, col 17 to line 393, col 40 of module raft_0241865428: 878498
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 393, col 17 to line 393, col 23 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 393, col 27 to line 393, col 40 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 394, col 17 to line 394, col 35 of module raft_0241865428: 878498
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 394, col 17 to line 394, col 24 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 394, col 28 to line 394, col 35 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 351, col 21 to line 351, col 39 of module raft_0241865428: 823366
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 351, col 21 to line 351, col 35 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 352, col 24 to line 352, col 42 of module raft_0241865428: 55132
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 352, col 24 to line 352, col 38 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 353, col 24 to line 353, col 53 of module raft_0241865428: 55132
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 353, col 24 to line 353, col 38 of module raft_0241865428: 184263
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 353, col 43 to line 353, col 53 of module raft_0241865428: 184263
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 354, col 24 to line 354, col 68 of module raft_0241865428: 239395
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 354, col 24 to line 354, col 37 of module raft_0241865428: 184263
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 354, col 41 to line 354, col 68 of module raft_0241865428: 184263
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 396, col 17 to line 396, col 41 of module raft_0241865428: 878498
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 396, col 23 to line 396, col 41 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 357, col 11 to line 364, col 56 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 357, col 14 to line 357, col 31 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 360, col 29 to line 360, col 49 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 359, col 23 to line 359, col 44 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 358, col 38 to line 358, col 50 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 362, col 14 to line 364, col 56 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 362, col 22 to line 364, col 54 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 362, col 25 to line 362, col 50 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 363, col 25 to line 363, col 49 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 364, col 25 to line 364, col 54 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 404, col 27 to line 407, col 61 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 408, col 27 to line 408, col 107 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 77, col 29 to line 77, col 96 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 416, col 27 to line 416, col 74 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 419, col 27 to line 419, col 45 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 420, col 27 to line 420, col 46 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 423, col 30 to line 423, col 62 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 77, col 29 to line 77, col 96 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 429, col 27 to line 429, col 82 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 432, col 27 to line 432, col 45 of module raft_0241865428: 316487
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 432, col 27 to line 432, col 36 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 432, col 41 to line 432, col 45 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 433, col 27 to line 433, col 55 of module raft_0241865428: 316487
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 433, col 27 to line 433, col 37 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 433, col 41 to line 433, col 55 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 436, col 30 to line 436, col 89 of module raft_0241865428: 158240
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 436, col 37 to line 436, col 89 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 437, col 33 to line 437, col 127 of module raft_0241865428: 158240
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 437, col 54 to line 437, col 127 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 438, col 27 to line 438, col 107 of module raft_0241865428: 158240
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 438, col 42 to line 438, col 107 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 438, col 43 to line 438, col 53 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 438, col 62 to line 438, col 106 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 438, col 69 to line 438, col 106 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 80, col 11 to line 80, col 46 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 180448
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 224850
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 180448
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||line 438, col 73 to line 438, col 105 of module raft_0241865428: 158247:585746
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 438, col 74 to line 438, col 87 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 438, col 90 to line 438, col 104 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 402, col 41 to line 402, col 78 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 79, col 11 to line 79, col 46 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 79, col 28 to line 79, col 46 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 79, col 41 to line 79, col 46 of module raft_0241865428: 316494
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 79, col 37 to line 79, col 37 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 79, col 24 to line 79, col 24 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||||||line 402, col 45 to line 402, col 77 of module raft_0241865428: 158247:632988
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 77, col 29 to line 77, col 96 of module raft_0241865428: 158240
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 77, col 41 to line 77, col 96 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 439, col 33 to line 444, col 55 of module raft_0241865428: 158247
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 446, col 27 to line 446, col 50 of module raft_0241865428: 158240
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 448, col 11 to line 448, col 102 of module raft_0241865428: 720251
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 511, col 46 to line 511, col 46 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 511, col 49 to line 511, col 49 of module raft_0241865428: 720258
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 512, col 19 to line 512, col 49 of module raft_0241865428: 1592609
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 512, col 19 to line 512, col 25 of module raft_0241865428: 1156430
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 512, col 29 to line 512, col 49 of module raft_0241865428: 1156430
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 483, col 8 to line 483, col 20 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 484, col 8 to line 484, col 19 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 485, col 8 to line 485, col 31 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 76, col 15 to line 76, col 53 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 487, col 8 to line 487, col 104 of module raft_0241865428: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 513, col 40 to line 513, col 40 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 513, col 43 to line 513, col 43 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 450, col 8 to line 450, col 20 of module raft_0241865428: 872358
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 450, col 8 to line 450, col 8 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 450, col 14 to line 450, col 20 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 451, col 8 to line 451, col 20 of module raft_0241865428: 872358
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 451, col 8 to line 451, col 8 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 451, col 14 to line 451, col 20 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 452, col 8 to line 452, col 31 of module raft_0241865428: 872358
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 452, col 8 to line 452, col 14 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 452, col 18 to line 452, col 31 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 453, col 14 to line 453, col 23 of module raft_0241865428: 565700
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 453, col 14 to line 453, col 14 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 458, col 20 to line 458, col 80 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 458, col 34 to line 458, col 80 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 458, col 35 to line 458, col 43 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 458, col 53 to line 458, col 79 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 458, col 63 to line 458, col 79 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 458, col 63 to line 458, col 75 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 459, col 20 to line 459, col 76 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 459, col 34 to line 459, col 76 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 459, col 35 to line 459, col 44 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 459, col 53 to line 459, col 75 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 459, col 63 to line 459, col 75 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 460, col 20 to line 465, col 42 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 461, col 22 to line 465, col 42 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 461, col 25 to line 463, col 64 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 461, col 28 to line 461, col 47 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 461, col 28 to line 461, col 35 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 455, col 30 to line 457, col 43 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 455, col 33 to line 455, col 81 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 455, col 33 to line 455, col 49 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 455, col 33 to line 455, col 45 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 455, col 54 to line 455, col 81 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 455, col 54 to line 455, col 66 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 455, col 71 to line 455, col 81 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 456, col 36 to line 456, col 80 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 456, col 38 to line 456, col 50 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 456, col 53 to line 456, col 78 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 456, col 53 to line 456, col 73 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 456, col 53 to line 456, col 58 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 456, col 60 to line 456, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 461, col 40 to line 461, col 47 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 462, col 28 to line 462, col 63 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 462, col 28 to line 462, col 35 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 455, col 30 to line 457, col 43 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 455, col 33 to line 455, col 81 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 455, col 33 to line 455, col 49 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 455, col 33 to line 455, col 45 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 455, col 54 to line 455, col 81 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 455, col 54 to line 455, col 66 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 455, col 71 to line 455, col 81 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 456, col 36 to line 456, col 80 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 456, col 38 to line 456, col 50 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 456, col 53 to line 456, col 78 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 456, col 53 to line 456, col 73 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 456, col 53 to line 456, col 58 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 456, col 60 to line 456, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 462, col 41 to line 462, col 63 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 463, col 28 to line 463, col 64 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 463, col 29 to line 463, col 64 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 463, col 29 to line 463, col 54 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 463, col 29 to line 463, col 44 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 463, col 46 to line 463, col 53 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 455, col 30 to line 457, col 43 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 455, col 33 to line 455, col 81 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 455, col 33 to line 455, col 49 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 455, col 33 to line 455, col 45 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||||||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 455, col 54 to line 455, col 81 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 455, col 54 to line 455, col 66 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||||||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 455, col 71 to line 455, col 81 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 456, col 36 to line 456, col 80 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 456, col 38 to line 456, col 50 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 456, col 53 to line 456, col 78 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 456, col 53 to line 456, col 73 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 456, col 53 to line 456, col 58 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 456, col 60 to line 456, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 518084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 259042
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 129521
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||||||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 129521:1036168
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 464, col 27 to line 464, col 80 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 464, col 28 to line 464, col 43 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 464, col 54 to line 464, col 61 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 455, col 30 to line 457, col 43 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 455, col 33 to line 455, col 81 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 455, col 33 to line 455, col 49 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 455, col 33 to line 455, col 45 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 186428
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 372856
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 186428
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 93214:745712
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 455, col 54 to line 455, col 81 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 455, col 54 to line 455, col 66 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 186428
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 372856
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 186428
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 93214:745712
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 455, col 71 to line 455, col 81 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 456, col 36 to line 456, col 80 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 456, col 38 to line 456, col 50 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 186428
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 372856
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 186428
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 93214:745712
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 456, col 53 to line 456, col 78 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 456, col 53 to line 456, col 73 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 456, col 53 to line 456, col 58 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 456, col 60 to line 456, col 72 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 454, col 35 to line 454, col 72 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 80, col 11 to line 80, col 46 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 186428
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 372856
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 186428
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||||||||||line 454, col 39 to line 454, col 71 of module raft_0241865428: 93214:745712
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 464, col 75 to line 464, col 79 of module raft_0241865428: 93214
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 465, col 27 to line 465, col 42 of module raft_0241865428: 36307
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 466, col 14 to line 466, col 29 of module raft_0241865428: 742837
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 466, col 20 to line 466, col 29 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 467, col 14 to line 467, col 84 of module raft_0241865428: 306658
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 467, col 27 to line 467, col 84 of module raft_0241865428: 306658
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 467, col 28 to line 467, col 36 of module raft_0241865428: 306658
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 467, col 45 to line 467, col 83 of module raft_0241865428: 306658
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 467, col 55 to line 467, col 83 of module raft_0241865428: 306658
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 80, col 11 to line 80, col 46 of module raft_0241865428: 306658
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 80, col 28 to line 80, col 46 of module raft_0241865428: 496355
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 80, col 41 to line 80, col 46 of module raft_0241865428: 875749
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 80, col 37 to line 80, col 37 of module raft_0241865428: 496355
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 80, col 24 to line 80, col 24 of module raft_0241865428: 306658
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  |||line 467, col 59 to line 467, col 82 of module raft_0241865428: 306658:1868459
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 468, col 14 to line 468, col 55 of module raft_0241865428: 306658
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 469, col 8 to line 469, col 17 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 470, col 8 to line 470, col 99 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 514, col 50 to line 514, col 50 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 514, col 53 to line 514, col 53 of module raft_0241865428: 436179
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 547, col 16 to line 547, col 16 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  line 544, col 16 to line 546, col 72 of module raft_0241865428: 422000:1578437
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 545, col 13 to line 546, col 71 of module raft_0241865428: 1156437
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 544, col 25 to line 544, col 46 of module raft_0241865428: 422000
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2775:0 @!@!@
+  ||line 83, col 23 to line 83, col 61 of module raft_0241865428: 422000:1578437
+@!@!@ENDMSG 2775 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 83, col 49 to line 83, col 59 of module raft_0241865428: 2400840
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 83, col 31 to line 83, col 45 of module raft_0241865428: 422000
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 544, col 38 to line 544, col 45 of module raft_0241865428: 421815
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<MoreThanOneLeaderInv line 559, col 1 to line 559, col 20 of module raft_0241865428>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 560, col 5 to line 564, col 16 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 561, col 9 to line 564, col 16 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 561, col 10 to line 563, col 29 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 561, col 13 to line 561, col 43 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 562, col 13 to line 562, col 29 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 563, col 13 to line 563, col 29 of module raft_0241865428: 3645084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 564, col 12 to line 564, col 16 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 560, col 16 to line 560, col 22 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<LogMatchingInv line 566, col 1 to line 566, col 14 of module raft_0241865428>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 567, col 5 to line 570, col 51 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 567, col 27 to line 570, col 51 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 567, col 27 to line 567, col 32 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 568, col 9 to line 570, col 51 of module raft_0241865428: 7290168
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 569, col 13 to line 570, col 51 of module raft_0241865428: 3808588
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 568, col 18 to line 568, col 49 of module raft_0241865428: 7290168
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 568, col 21 to line 568, col 49 of module raft_0241865428: 7290168
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 81, col 14 to line 81, col 35 of module raft_0241865428: 7290168
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 81, col 17 to line 81, col 21 of module raft_0241865428: 7290168
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 81, col 28 to line 81, col 28 of module raft_0241865428: 3017514
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 81, col 35 to line 81, col 35 of module raft_0241865428: 4272654
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 568, col 25 to line 568, col 35 of module raft_0241865428: 7290168
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 568, col 38 to line 568, col 48 of module raft_0241865428: 7290168
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 567, col 17 to line 567, col 23 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<LeaderCompletenessInv line 572, col 1 to line 572, col 21 of module raft_0241865428>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 573, col 5 to line 576, col 72 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 574, col 9 to line 576, col 72 of module raft_0241865428: 3645084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 574, col 9 to line 574, col 25 of module raft_0241865428: 3645084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 575, col 9 to line 576, col 72 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 575, col 28 to line 576, col 72 of module raft_0241865428: 3645084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 575, col 28 to line 575, col 33 of module raft_0241865428: 3645084
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 576, col 13 to line 576, col 72 of module raft_0241865428: 2430056
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 95, col 5 to line 96, col 48 of module raft_0241865428: 2430056
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 95, col 8 to line 95, col 29 of module raft_0241865428: 2430056
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 96, col 8 to line 96, col 48 of module raft_0241865428: 2430056
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 96, col 32 to line 96, col 48 of module raft_0241865428: 73510
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 96, col 17 to line 96, col 28 of module raft_0241865428: 2430056
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 576, col 27 to line 576, col 64 of module raft_0241865428: 2430056
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 86, col 5 to line 92, col 14 of module raft_0241865428: 2430056
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 86, col 8 to line 86, col 71 of module raft_0241865428: 2430056
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 86, col 8 to line 86, col 23 of module raft_0241865428: 2430056
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 86, col 28 to line 86, col 71 of module raft_0241865428: 1424568
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 88, col 27 to line 90, col 88 of module raft_0241865428: 1424568
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 89, col 31 to line 90, col 88 of module raft_0241865428: 1619731
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 89, col 34 to line 89, col 52 of module raft_0241865428: 1619731
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||||line 90, col 34 to line 90, col 88 of module raft_0241865428: 1619731
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 90, col 59 to line 90, col 88 of module raft_0241865428: 2010057
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||||line 90, col 43 to line 90, col 55 of module raft_0241865428: 1619731
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||||line 88, col 40 to line 88, col 52 of module raft_0241865428: 1424568
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 91, col 10 to line 91, col 61 of module raft_0241865428: 1424568
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||||line 92, col 10 to line 92, col 14 of module raft_0241865428: 1005488
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 576, col 47 to line 576, col 47 of module raft_0241865428: 2430056
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||||line 576, col 50 to line 576, col 63 of module raft_0241865428: 1424568
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 576, col 66 to line 576, col 71 of module raft_0241865428: 2430056
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 575, col 18 to line 575, col 24 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 573, col 14 to line 573, col 20 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<LogInv line 578, col 1 to line 578, col 6 of module raft_0241865428>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 579, col 5 to line 581, col 51 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 580, col 9 to line 581, col 51 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 580, col 12 to line 580, col 51 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 95, col 5 to line 96, col 48 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 95, col 8 to line 95, col 29 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 96, col 8 to line 96, col 48 of module raft_0241865428: 9368161
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 96, col 32 to line 96, col 48 of module raft_0241865428: 1013802
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 96, col 17 to line 96, col 28 of module raft_0241865428: 9368161
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 580, col 26 to line 580, col 37 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 99, col 5 to line 101, col 40 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 99, col 8 to line 99, col 25 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 100, col 10 to line 100, col 14 of module raft_0241865428: 8373501
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 101, col 10 to line 101, col 40 of module raft_0241865428: 2561751
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 580, col 36 to line 580, col 36 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 580, col 39 to line 580, col 50 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 99, col 5 to line 101, col 40 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 99, col 8 to line 99, col 25 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 100, col 10 to line 100, col 14 of module raft_0241865428: 8373501
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 101, col 10 to line 101, col 40 of module raft_0241865428: 2561751
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 580, col 49 to line 580, col 49 of module raft_0241865428: 10935252
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 581, col 12 to line 581, col 51 of module raft_0241865428: 1567091
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 95, col 5 to line 96, col 48 of module raft_0241865428: 1567091
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 95, col 8 to line 95, col 29 of module raft_0241865428: 1567091
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 96, col 8 to line 96, col 48 of module raft_0241865428: 1567091
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 96, col 32 to line 96, col 48 of module raft_0241865428: 6291
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 96, col 17 to line 96, col 28 of module raft_0241865428: 1567091
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 581, col 26 to line 581, col 37 of module raft_0241865428: 1567091
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 99, col 5 to line 101, col 40 of module raft_0241865428: 1567091
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 99, col 8 to line 99, col 25 of module raft_0241865428: 1567091
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 100, col 10 to line 100, col 14 of module raft_0241865428: 1560800
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||||line 101, col 10 to line 101, col 40 of module raft_0241865428: 6291
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||||line 581, col 36 to line 581, col 36 of module raft_0241865428: 1567091
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 581, col 39 to line 581, col 50 of module raft_0241865428: 1567091
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 579, col 17 to line 579, col 23 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<LeaderCommitted line 612, col 1 to line 612, col 15 of module raft_0241865428>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 613, col 5 to line 613, col 42 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 613, col 24 to line 613, col 42 of module raft_0241865428: 2010129
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 613, col 14 to line 613, col 20 of module raft_0241865428: 1215028
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<MaxCInv line 588, col 1 to line 588, col 7 of module raft_0241865428>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 588, col 12 to line 588, col 78 of module raft_0241865428: 1215021
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<LeaderCountInv line 590, col 1 to line 590, col 14 of module raft_0241865428>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 590, col 19 to line 590, col 93 of module raft_0241865428: 1215021
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 590, col 39 to line 590, col 92 of module raft_0241865428: 3645063
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 590, col 39 to line 590, col 55 of module raft_0241865428: 3645063
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 590, col 60 to line 590, col 92 of module raft_0241865428: 1215021
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 590, col 28 to line 590, col 34 of module raft_0241865428: 1215021
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<MaxTermInv line 592, col 1 to line 592, col 10 of module raft_0241865428>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 592, col 15 to line 592, col 58 of module raft_0241865428: 1215021
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 592, col 34 to line 592, col 58 of module raft_0241865428: 3645063
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 592, col 24 to line 592, col 30 of module raft_0241865428: 1215021
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<EntryCommitMessageCountInv line 594, col 1 to line 594, col 26 of module raft_0241865428>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 596, col 25 to line 596, col 76 of module raft_0241865428: 780400
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 597, col 36 to line 597, col 90 of module raft_0241865428: 780400
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 595, col 27 to line 595, col 46 of module raft_0241865428: 780400
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 598, col 8 to line 603, col 20 of module raft_0241865428: 1215021
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 599, col 22 to line 599, col 42 of module raft_0241865428: 2337497
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 600, col 12 to line 603, col 20 of module raft_0241865428: 2337497
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 600, col 15 to line 600, col 29 of module raft_0241865428: 2337497
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 601, col 17 to line 602, col 96 of module raft_0241865428: 799542
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 601, col 18 to line 601, col 94 of module raft_0241865428: 799542
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 602, col 21 to line 602, col 95 of module raft_0241865428: 517038
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 603, col 17 to line 603, col 20 of module raft_0241865428: 1537955
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 598, col 19 to line 598, col 41 of module raft_0241865428: 1215021
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2202:0 @!@!@
+End of statistics.
+@!@!@ENDMSG 2202 @!@!@
+@!@!@STARTMSG 2200:0 @!@!@
+Progress(22) at 2025-05-24 15:57:39: 3,112,270 states generated (8,352,471 s/min), 725,306 distinct states found (1,946,520 ds/min), 303,305 states left on queue.
+@!@!@ENDMSG 2200 @!@!@
+@!@!@STARTMSG 2199:0 @!@!@
+3112270 states generated, 725306 distinct states found, 303305 states left on queue.
+@!@!@ENDMSG 2199 @!@!@
+@!@!@STARTMSG 2194:0 @!@!@
+The depth of the complete state graph search is 22.
+@!@!@ENDMSG 2194 @!@!@
+@!@!@STARTMSG 2268:0 @!@!@
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 7 and the 95th percentile is 3).
+@!@!@ENDMSG 2268 @!@!@
+@!@!@STARTMSG 2186:0 @!@!@
+Finished in 22422ms at (2025-05-24 15:57:39)
+@!@!@ENDMSG 2186 @!@!@

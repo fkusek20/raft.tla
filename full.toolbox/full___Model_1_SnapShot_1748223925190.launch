@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.lamport.tla.toolbox.tool.tlc.modelCheck">
+    <stringAttribute key="configurationName" value="Model_1_SnapShot_1748223925190"/>
+    <intAttribute key="distributedFPSetCount" value="0"/>
+    <stringAttribute key="distributedNetworkInterface" value="172.16.28.1"/>
+    <intAttribute key="distributedNodesCount" value="1"/>
+    <stringAttribute key="distributedTLC" value="off"/>
+    <intAttribute key="fpIndex" value="104"/>
+    <intAttribute key="maxHeapSize" value="25"/>
+    <stringAttribute key="modelBehaviorInit" value=""/>
+    <stringAttribute key="modelBehaviorNext" value=""/>
+    <stringAttribute key="modelBehaviorSpec" value="MySpec"/>
+    <intAttribute key="modelBehaviorSpecType" value="1"/>
+    <stringAttribute key="modelBehaviorVars" value="messages, matchIndex, log, switchSentRecord, state, netAggSentCache, leaderCount, entryCommitStats, commitIndex, currentTerm, votesResponded, maxc, nextIndex, votesGranted, switchBuffer, voterLog, votedFor, unorderedRequests"/>
+    <stringAttribute key="modelComments" value=""/>
+    <booleanAttribute key="modelCorrectnessCheckDeadlock" value="false"/>
+    <listAttribute key="modelCorrectnessInvariants">
+        <listEntry value="1MoreThanOneLeaderInv"/>
+        <listEntry value="1LogMatchingInv"/>
+        <listEntry value="1LeaderCompletenessInv"/>
+        <listEntry value="1LogInv"/>
+        <listEntry value="1LeaderCommitted"/>
+        <listEntry value="1MaxCInv"/>
+        <listEntry value="1LeaderCountInv"/>
+        <listEntry value="1MaxTermInv"/>
+        <listEntry value="1EntryCommitMessageCountInv"/>
+    </listAttribute>
+    <listAttribute key="modelCorrectnessProperties"/>
+    <intAttribute key="modelEditorOpenTabs" value="8"/>
+    <stringAttribute key="modelExpressionEval" value=""/>
+    <listAttribute key="modelParameterConstants">
+        <listEntry value="AppendEntriesResponse;;AppendEntriesResponse;1;0"/>
+        <listEntry value="Follower;;Follower;1;0"/>
+        <listEntry value="Leader;;Leader;1;0"/>
+        <listEntry value="MaxTerm;;3;0;0"/>
+        <listEntry value="Servers;;{&quot;r2&quot;, &quot;r3&quot;, &quot;r4&quot;};0;0"/>
+        <listEntry value="Nil;;Nil;1;0"/>
+        <listEntry value="RequestVoteResponse;;RequestVoteResponse;1;0"/>
+        <listEntry value="MaxBecomeLeader;;1;0;0"/>
+        <listEntry value="Candidate;;Candidate;1;0"/>
+        <listEntry value="switchIndex;;&quot;r1&quot;;0;0"/>
+        <listEntry value="Switch;;Switch;1;0"/>
+        <listEntry value="RequestVoteRequest;;RequestVoteRequest;1;0"/>
+        <listEntry value="AppendEntriesRequest;;AppendEntriesRequest;1;0"/>
+        <listEntry value="Value;;{&quot;v1&quot;, &quot;v2&quot;};0;0"/>
+        <listEntry value="Server;;{&quot;r1&quot;, &quot;r2&quot;, &quot;r3&quot;, &quot;r4&quot;};0;0"/>
+        <listEntry value="MaxClientRequests;;2;0;0"/>
+        <listEntry value="netAggIndex;;&quot;r5&quot;;0;0"/>
+        <listEntry value="NetAgg;;NetAgg;1;0"/>
+    </listAttribute>
+    <intAttribute key="modelVersion" value="20191005"/>
+    <intAttribute key="numberOfWorkers" value="8"/>
+    <stringAttribute key="result.mail.address" value=""/>
+    <stringAttribute key="specName" value="full"/>
+    <stringAttribute key="tlcResourcesProfile" value="local custom"/>
+</launchConfiguration>

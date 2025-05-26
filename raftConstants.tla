@@ -9,14 +9,10 @@ CONSTANTS Server
 CONSTANTS Value
 
 \* Server states.
-CONSTANTS Follower, Candidate, Leader, Switch
+CONSTANTS Follower, Candidate, Leader, Switch, NetAgg
 
 \* A reserved value.
 CONSTANTS Nil
-
-CONSTANTS Servers
-
-CONSTANTS switchIndex
 
 \* Message types:
 CONSTANTS RequestVoteRequest, RequestVoteResponse,

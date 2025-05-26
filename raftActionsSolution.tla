@@ -1,13 +1,15 @@
 ---------------------------- MODULE raftActionsSolution ----------------------------
 
-EXTENDS raftInit, Sequences
+EXTENDS raftInit
 
 ----
 \* Define state transitions
 
-\* Server i restarts from stable storage. (Assuming Restart is only for Raft Servers)
+\* Modified to allow Restarts only for Leaders
+\* Server i restarts from stable storage.
+\* It loses everything but its currentTerm, votedFor, and log.
+\* Also persists messages and instrumentation vars elections, maxc, leaderCount, entryCommitStats
 Restart(i) ==
-    /\ i \in Servers
     /\ state[i] = Leader \* limit restart to leaders todo mc
     /\ state'          = [state EXCEPT ![i] = Follower]
     /\ votesResponded' = [votesResponded EXCEPT ![i] = {}]
@@ -16,25 +18,53 @@ Restart(i) ==
     /\ nextIndex'      = [nextIndex EXCEPT ![i] = [j \in Server |-> 1]]
     /\ matchIndex'     = [matchIndex EXCEPT ![i] = [j \in Server |-> 0]]
     /\ commitIndex'    = [commitIndex EXCEPT ![i] = 0]
-    /\ UNCHANGED <<messages, currentTerm, votedFor, log, instrumentationVars, hovercraftVars>>
+    /\ UNCHANGED <<messages, currentTerm, votedFor, log, instrumentationVars, hovercraftVars, Servers>>
 
-\* Server i times out and starts a new election. (Only Raft Servers timeout)
-Timeout(i) ==
-    /\ i \in Servers
-    /\ state[i] \in {Follower, Candidate}
-    /\ currentTerm[i] < MaxTerm
-    /\ state' = [state EXCEPT ![i] = Candidate]
-    /\ currentTerm' = [currentTerm EXCEPT ![i] = currentTerm[i] + 1]
-    /\ votedFor' = [votedFor EXCEPT ![i] = Nil]
-    /\ votesResponded' = [votesResponded EXCEPT ![i] = {}]
-    /\ votesGranted'   = [votesGranted EXCEPT ![i] = {}]
-    /\ voterLog'       = [voterLog EXCEPT ![i] = [j \in {} |-> <<>>]]
-    /\ UNCHANGED <<messages, leaderVars, logVars, instrumentationVars, hovercraftVars>>
+\* Modified to restrict Timeout to just Followers
+\* Server i times out and starts a new election. Follower -> Candidate
+Timeout(i) == /\ state[i] \in {Follower} \*, Candidate
+              /\ currentTerm[i] < MaxTerm
+              /\ state' = [state EXCEPT ![i] = Candidate]
+              /\ currentTerm' = [currentTerm EXCEPT ![i] = currentTerm[i] + 1]
+              \* Most implementations would probably just set the local vote
+              \* atomically, but messaging localhost for it is weaker.
+              /\ votedFor' = [votedFor EXCEPT ![i] = Nil]
+              /\ votesResponded' = [votesResponded EXCEPT ![i] = {}]
+              /\ votesGranted'   = [votesGranted EXCEPT ![i] = {}]
+              /\ voterLog'       = [voterLog EXCEPT ![i] = [j \in {} |-> <<>>]]
+              /\ UNCHANGED <<messages, leaderVars, logVars, instrumentationVars, hovercraftVars, Servers>>
 
-\* Candidate i sends j a RequestVote request. (Only between Raft Servers)
+\* Modified to restrict Leader transitions, bounded by MaxBecomeLeader
+\* Candidate i transitions to leader. Candidate -> Leader
+BecomeLeader(i) ==
+    /\ state[i] = Candidate
+    /\ votesGranted[i] \in Quorum
+    /\ leaderCount[i] < MaxBecomeLeader
+    /\ state'      = [state EXCEPT ![i] = Leader]
+    /\ nextIndex'  = [nextIndex EXCEPT ![i] =
+                         [j \in Server |-> Len(log[i]) + 1]]
+    /\ matchIndex' = [matchIndex EXCEPT ![i] =
+                         [j \in Server |-> 0]]
+    /\ leaderCount' = [leaderCount EXCEPT ![i] = leaderCount[i] + 1]
+    /\ UNCHANGED <<messages, currentTerm, votedFor, candidateVars, logVars, maxc, entryCommitStats, hovercraftVars, Servers>>
+
+\* Modified up to MaxTerm; Back To Follower
+\* Any RPC with a newer term causes the recipient to advance its term first.
+UpdateTerm(i, j, m) ==
+    /\ m.mterm > currentTerm[i]
+    /\ m.mterm < MaxTerm
+    /\ currentTerm'    = [currentTerm EXCEPT ![i] = m.mterm]
+    /\ state'          = [state       EXCEPT ![i] = Follower]
+    /\ votedFor'       = [votedFor    EXCEPT ![i] = Nil]
+       \* messages is unchanged so m can be processed further.
+    /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars, Servers>>
+
+\***************************** REQUEST VOTE **********************************************
+\* Message handlers
+\* i = recipient, j = sender, m = message
+
+\* Candidate i sends j a RequestVote request.
 RequestVote(i, j) ==
-    /\ i \in Servers
-    /\ j \in Servers
     /\ state[i] = Candidate
     /\ j \notin votesResponded[i]
     /\ Send([mtype         |-> RequestVoteRequest,
@@ -43,140 +73,10 @@ RequestVote(i, j) ==
              mlastLogIndex |-> Len(log[i]),
              msource       |-> i,
              mdest         |-> j])
-    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars>>
+    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars, Servers>>
 
-\* Leader i sends j an AppendEntries request containing exactly 1 METADATA entry.
-AppendEntries(i, j) ==
-    /\ i \in Servers
-    /\ j \in Servers
-    /\ i /= j
-    /\ state[i] = Leader
-    /\ nextIndex[i][j] <= Len(log[i])
-    /\ LET entryIndex == nextIndex[i][j]
-           metaEntry == log[i][entryIndex]      \* Contains [term |-> t, value |-> v_id]
-           entries == << metaEntry >>
-           entryKey == <<entryIndex, metaEntry.term>>
-           prevLogIndex == entryIndex - 1
-           prevLogTerm == IF prevLogIndex > 0 THEN log[i][prevLogIndex].term ELSE 0
-       IN Send([mtype          |-> AppendEntriesRequest,
-                mterm          |-> currentTerm[i],
-                mprevLogIndex  |-> prevLogIndex,
-                mprevLogTerm   |-> prevLogTerm,
-                mentries       |-> entries,      \* Sends METADATA only
-                mlog           |-> log[i],       \* History variable for proofs
-                mcommitIndex   |-> Min({commitIndex[i], entryIndex - 1}),
-                msource        |-> i,
-                mdest          |-> j])
-       /\ entryCommitStats' = \* Modifies sentCount
-            IF entryKey \in DOMAIN entryCommitStats /\ ~entryCommitStats[entryKey].committed
-            THEN [entryCommitStats EXCEPT ![entryKey].sentCount = @ + 1]
-            ELSE entryCommitStats
-    \* serverVars, candidateVars, leaderVars (nextIndex, matchIndex), logVars (log, commitIndex)
-    \* are potentially part of broader tuples.
-    \* maxc, leaderCount are part of instrumentationVars but not changed here.
-    \* hovercraftVars are not changed.
-    /\ UNCHANGED <<serverVars, candidateVars, nextIndex, matchIndex, log, commitIndex, maxc, leaderCount, hovercraftVars>>
-
-\* Candidate i transitions to leader. (Only Raft Servers become leader)
-BecomeLeader(i) ==
-    /\ i \in Servers
-    /\ state[i] = Candidate
-    /\ votesGranted[i] \in Quorum
-    /\ leaderCount[i] < MaxBecomeLeader
-    /\ state'      = [state EXCEPT ![i] = Leader]
-    /\ nextIndex'  = [nextIndex EXCEPT ![i] =
-                         [k \in Server |-> Len(log[i]) + 1]]
-    /\ matchIndex' = [matchIndex EXCEPT ![i] =
-                         [k \in Server |-> 0]]
-    /\ leaderCount' = [leaderCount EXCEPT ![i] = leaderCount[i] + 1]
-    /\ UNCHANGED <<messages, currentTerm, votedFor, candidateVars, logVars, maxc, entryCommitStats, hovercraftVars>>
-
-\* Action 1: Client request arrives at the system, processed by Leader, informs Switch
-SwitchClientRequest(sw, ldr, v) ==
-    /\ sw = switchIndex             \* Ensure sw is the actual switch
-    /\ ldr \in Servers             \* Ensure ldr is a Raft server
-    /\ state[ldr] = Leader         \* Ensure ldr is the current Raft leader
-    /\ v \in Value
-    /\ maxc < MaxClientRequests
-    /\ v \notin DOMAIN switchBuffer  \* Only process new requests
-    /\ LET leaderTerm == currentTerm[ldr]
-           entry == [term    |-> leaderTerm,
-                     value   |-> v,
-                     payload |-> v] \* Payload is the value itself
-       IN /\ switchBuffer' = switchBuffer @@ (v :> entry)
-          /\ maxc' = maxc + 1
-          \* The switch itself can "receive" the request ID into its buffer immediately
-          /\ unorderedRequests' = [unorderedRequests EXCEPT ![sw] = unorderedRequests[sw] \union {v}]
-    /\ UNCHANGED << messages, serverVars, candidateVars, leaderVars, logVars,
-                    commitIndex, leaderCount, entryCommitStats, switchSentRecord >>
-
-\* Action 2: Switch replicates a payloaded request to a Raft server's buffer
-SwitchClientRequestReplicate(sw, raftSrv, val) ==
-    /\ sw = switchIndex                \* sw is the switch
-    /\ raftSrv \in Servers             \* raftSrv is a Raft consensus server
-    /\ val \in DOMAIN switchBuffer     \* val is a known request ID in the switch's buffer
-    /\ LET entryToReplicate == switchBuffer[val]
-           termOfEntry == entryToReplicate.term
-           pairToRecord == <<val, termOfEntry>>
-       IN \* Only replicate if not already sent for this term
-          /\ pairToRecord \notin switchSentRecord[raftSrv]
-          /\ unorderedRequests' = [unorderedRequests EXCEPT ![raftSrv] = unorderedRequests[raftSrv] \union {val}]
-          /\ switchSentRecord' = [switchSentRecord EXCEPT ![raftSrv] = switchSentRecord[raftSrv] \union {pairToRecord}]
-    /\ UNCHANGED << messages, serverVars, candidateVars, leaderVars, logVars,
-                    commitIndex, maxc, leaderCount, entryCommitStats, switchBuffer >>
-
-\* Action 3: Leader ingests a request ID (for which payload is assumed replicated) into its own log
-LeaderIngestHovercRaftRequest(ldr, val) ==
-    /\ ldr \in Servers
-    /\ state[ldr] = Leader
-    /\ val \in DOMAIN switchBuffer      \* The leader must know of this value from the switchBuffer
-    /\ val \in unorderedRequests[ldr] \* NEW: Leader must have it buffered
-    /\ LET leaderTerm == currentTerm[ldr]
-           metaEntry == [term |-> leaderTerm, value |-> val]
-           valueAlreadyExists == \E idx \in 1..Len(log[ldr]) : log[ldr][idx].value = val
-           isNewToLeaderLog == ~valueAlreadyExists
-       IN /\ isNewToLeaderLog
-          /\ LET newLeaderLog == Append(log[ldr], metaEntry)
-                 newEntryIndex == Len(log[ldr]) + 1
-                 newEntryKey == <<newEntryIndex, leaderTerm>>
-             IN /\ log' = [log EXCEPT ![ldr] = newLeaderLog]
-                /\ unorderedRequests' = [unorderedRequests EXCEPT ![ldr] = unorderedRequests[ldr] \ {val}]
-                /\ entryCommitStats' =
-                      IF newEntryIndex > 0
-                      THEN entryCommitStats @@ (newEntryKey :> [ sentCount |-> 0, ackCount |-> 0, committed |-> FALSE ])
-                      ELSE entryCommitStats
-                \* maxc was already updated by SwitchClientRequest, so it's unchanged here.
-                \* commitIndex is not changed by this action directly.
-          /\ UNCHANGED << messages, serverVars, candidateVars, matchIndex, nextIndex,
-                          commitIndex, leaderCount, maxc, switchBuffer, switchSentRecord >>
-
-\* Leader i advances its commitIndex. (Only Raft server leaders)
-AdvanceCommitIndex(i) ==
-    /\ i \in Servers
-    /\ state[i] = Leader
-    /\ LET Agree(index) == {i} \cup {k \in Servers : matchIndex[i][k] >= index}
-           agreeIndexes == {index \in 1..Len(log[i]) :
-                                /\ Agree(index) \in Quorum
-                                /\ log[i][index].term = currentTerm[i]}
-           newCommitIndex == IF agreeIndexes /= {} THEN Max(agreeIndexes) ELSE commitIndex[i]
-           committedIndexes == { k \in Nat : k > commitIndex[i] /\ k <= newCommitIndex }
-           keysToUpdate == { key \in DOMAIN entryCommitStats : key[1] \in committedIndexes }
-       IN /\ commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]
-          /\ entryCommitStats' = \* Modifies committed flag
-               [ key \in DOMAIN entryCommitStats |->
-                   IF key \in keysToUpdate
-                   THEN [ entryCommitStats[key] EXCEPT !.committed = TRUE ]
-                   ELSE entryCommitStats[key] ]
-    \* serverVars, candidateVars, leaderVars (nextIndex, matchIndex), log
-    \* maxc, leaderCount are part of instrumentationVars but not changed here.
-    \* hovercraftVars are not changed.
-    /\ UNCHANGED <<messages, serverVars, candidateVars, nextIndex, matchIndex, log, maxc, leaderCount, hovercraftVars>>
-
-----
-\* Message handlers
-\* i = recipient, j = sender (should be Raft servers for Raft messages)
-
-\* Server i receives a RequestVote request from server j.
+\* Server i receives a RequestVote request from server j with
+\* m.mterm <= currentTerm[i].
 HandleRequestVoteRequest(i, j, m) ==
     LET logOk == \/ m.mlastLogTerm > LastTerm(log[i])
                  \/ /\ m.mlastLogTerm = LastTerm(log[i])
@@ -184,23 +84,25 @@ HandleRequestVoteRequest(i, j, m) ==
         grant == /\ m.mterm = currentTerm[i]
                  /\ logOk
                  /\ votedFor[i] \in {Nil, j}
-    IN /\ i \in Servers             \* Check receiver is Raft server
-       /\ j \in Servers             \* Check sender is Raft server
-       /\ m.mterm <= currentTerm[i]  \* Check term
-       /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j] \* Grant vote branch
-          \/ ~grant /\ UNCHANGED votedFor                       \* Deny vote branch
-       /\ Reply([mtype        |-> RequestVoteResponse,         \* Send reply
+    IN /\ m.mterm <= currentTerm[i]
+       /\ \/ grant  /\ votedFor' = [votedFor EXCEPT ![i] = j]
+          \/ ~grant /\ UNCHANGED votedFor
+       /\ Reply([mtype        |-> RequestVoteResponse,
                  mterm        |-> currentTerm[i],
                  mvoteGranted |-> grant,
-                 mlog         |-> log[i], \* History variable
+                 \* mlog is used just for the `elections' history variable for
+                 \* the proof. It would not exist in a real implementation.
+                 mlog         |-> log[i],
                  msource      |-> i,
                  mdest        |-> j],
                  m)
-       /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars>>
-\* Server i receives a RequestVote response from server j.
+       /\ UNCHANGED <<state, currentTerm, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars, Servers>>
+
+\* Server i receives a RequestVote response from server j with
+\* m.mterm = currentTerm[i].
 HandleRequestVoteResponse(i, j, m) ==
-    /\ i \in Servers
-    /\ j \in Servers
+    \* This tallies votes even when the current state is not Candidate, but
+    \* they won't be looked at, so it doesn't matter.
     /\ m.mterm = currentTerm[i]
     /\ votesResponded' = [votesResponded EXCEPT ![i] =
                               votesResponded[i] \cup {j}]
@@ -212,290 +114,302 @@ HandleRequestVoteResponse(i, j, m) ==
        \/ /\ ~m.mvoteGranted
           /\ UNCHANGED <<votesGranted, voterLog>>
     /\ Discard(m)
-    /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars, instrumentationVars, hovercraftVars>>
+    /\ UNCHANGED <<serverVars, votedFor, leaderVars, logVars, instrumentationVars, hovercraftVars, Servers>>
 
-\* Server i receives an AppendEntries request from server j.
-HandleAppendEntriesRequest(i, j, m) == \* i is follower, j is leader
+\* Responses with stale terms are ignored.
+DropStaleResponse(i, j, m) ==
+    /\ m.mterm < currentTerm[i]
+    /\ Discard(m)
+    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars, Servers>>
+
+\***************************** AppendEntries **********************************************
+
+\* Modified. Leader i receives a client request to add v to the log. up to MaxClientRequests.
+SwitchClientRequest(i, v) == 
+    /\ state[i] = Leader
+    /\ \E s \in Server: state[s] = Switch
+    \* Make sure prevoius requests have been served before serving new request (for debugging purposes)
+    \* /\ \A i \in DOMAIN switchBuffer, s \in Servers: <<switchBuffer[i].value, switchBuffer[i].term>> \in switchSentRecord[s]
+    /\ maxc < MaxClientRequests
+    /\ LET 
+           entryTerm == currentTerm[i]
+           entry == [term |-> entryTerm, value |-> v, payload |-> v]
+           entryExists == \E r \in DOMAIN switchBuffer: entry = switchBuffer[r]
+      IN
+           IF ~entryExists THEN
+            /\ maxc' = maxc + 1
+            /\ switchBuffer' = switchBuffer @@ (v :> entry)
+           ELSE UNCHANGED <<maxc, switchBuffer>>
+    /\ UNCHANGED <<messages, serverVars, candidateVars, leaderVars, logVars, leaderCount, entryCommitStats, switchIndex, netAggIndex, switchSentRecord, unorderedRequest, netAggSentCache, Servers>>
+
+
+SwitchClientRequestReplicate(i, v) == 
+    /\ \E j \in DOMAIN switchBuffer: j = v \* Check if v is a valid switch request
+    /\ ~(\E entry \in switchSentRecord[i]: entry = <<switchBuffer[v].value, switchBuffer[v].term>>)
+    /\ switchSentRecord' = [switchSentRecord EXCEPT ![i] = switchSentRecord[i] \cup {<<switchBuffer[v].value, switchBuffer[v].term>>} ]
+    /\ unorderedRequest' = [unorderedRequest EXCEPT ![i] = unorderedRequest[i] \cup {switchBuffer[v].value} ]
+    /\ UNCHANGED <<messages, serverVars, candidateVars, leaderVars, logVars, instrumentationVars, switchIndex, netAggIndex, switchBuffer, netAggSentCache, Servers>> 
+
+\* Leader Receives request from switch and appends it to its log. Then sends an AppendEntry message to NetAgg
+LeaderIngressHovercRaftRequest(i, v) == 
+    /\ state[i] = Leader    
+    /\ \E j \in DOMAIN switchBuffer: v = j \* Check if v is a valid switch request
+    /\ \E j \in unorderedRequest[i] : v = j \* Check if leader server has already received request v from switch
+    /\ ~(\E j \in DOMAIN log[i] : log[i][j] = switchBuffer[v])
+\*    /\ \A s \in Servers: v \in unorderedRequest[s] \* Check that all other servers have received request from switch    
+    /\ LET entryTerm == switchBuffer[v].term
+           entry == switchBuffer[v]
+           entries == << [term |-> entry.term, value |-> entry.value] >>
+\*           entryExist == \E j \in DOMAIN log[i] : log[i][j] = switchBuffer[v]
+           newLog == Append(log[i], entry)
+           newEntryIndex == Len(log[i]) + 1
+           prevLogIndex == newEntryIndex - 1
+           prevLogTerm == IF prevLogIndex > 0 THEN
+                              log[i][prevLogIndex].term
+                          ELSE 0
+           newEntryKey == <<newEntryIndex, entryTerm>>
+           message == [mtype          |-> AppendEntriesRequest,
+                mterm          |-> currentTerm[i],
+                mprevLogIndex  |-> prevLogIndex,
+                mprevLogTerm   |-> prevLogTerm,
+                mentries       |-> entries, \* This now only contains metadata information and not the entire request
+                
+                \* mlog is used as a history variable for the proof.
+                \* It would not exist in a real implementation.
+\*                mlog           |-> log[i],
+                mcommitIndex   |-> Min({commitIndex[i], newEntryIndex}), \* lastEntry}),
+\*                mcommitIndex   |-> Min({commitIndex[i], entryIndex}), \* lastEntry}),
+                msource        |-> i,
+                mdest          |-> netAggIndex]
+       IN Send(message)
+        /\ log' = [log EXCEPT ![i] = newLog]
+        /\ unorderedRequest' = [unorderedRequest EXCEPT ![i] = @ \ {v}]
+        /\ entryCommitStats' =
+              IF newEntryIndex > 0 \* Only add stats for truly new entries
+              THEN entryCommitStats @@ (newEntryKey :> [ sentCount |-> 0, ackCount |-> 0, committed |-> FALSE ])
+              ELSE entryCommitStats
+\*   Should leader still be responsible for initializing entryCommitStats?
+\*   After sending this to switch, shouldn't leader increase its matchCommitIndex and nextIndex values?           
+    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, commitIndex, leaderCount, maxc, switchBuffer, switchIndex, netAggIndex, switchSentRecord, netAggSentCache, Servers>>
+
+\* Modified. Leader i sends j an AppendEntries request containing exactly 1 entry. It was up to 1 entry.
+\* While implementations may want to send more than 1 at a time, this spec uses
+\* just 1 because it minimizes atomic regions without loss of generality.
+AppendEntries(i, j, m) ==  
+    /\ i /= j
+    /\ state[i] = Leader
+    /\ m.mentries /= <<>>
+    /\ Len(log[i]) > 0  \* Only proceed if the leader has entries to send
+    /\ m.mprevLogIndex < nextIndex[i][j] \* Only send if follower hasn't already acknowledged this index
+\*    /\ nextIndex[i][j] <= Len(log[i])  \*  Only proceed if there are entries to send to this follower
+\*    /\ matchIndex[i][j] < nextIndex[i][j] \* Only send if follower hasn't already acknowledged this index
+    /\ j \notin netAggSentCache[m] \* Append entries for this message not yet sent to this server
+    /\ \E r \in unorderedRequest[j] : Head(m.mentries).value = r \* Check if server has already received request v from switch
+    /\ LET  
+           entryIndex == m.mprevLogIndex + 1
+           entry == Head(m.mentries)
+           entries == m.mentries
+           entryKey == <<entryIndex, entry.term>>
+           updatedSource == [m EXCEPT !.msource = netAggIndex]
+           message == [updatedSource EXCEPT !.mdest = j]
+\*           prevLogIndex == entryIndex - 1
+\*           prevLogTerm == IF prevLogIndex > 0 THEN
+\*                              log[i][prevLogIndex].term
+\*                          ELSE 0
+\*           \* Rebuild the message with the correct information 
+\*           message == [mtype          |-> AppendEntriesRequest,
+\*                mterm          |-> currentTerm[i],
+\*                mprevLogIndex  |-> prevLogIndex,
+\*                mprevLogTerm   |-> prevLogTerm,
+\*                mentries       |-> entries, \* This now only contains metadata information and not the entire request
+\*                mcommitIndex   |-> Min({commitIndex[i], entryIndex}), \* lastEntry}),
+\*                msource        |-> netAggIndex,
+\*                mdest          |-> j]
+           
+       IN 
+       /\ netAggSentCache' = [netAggSentCache EXCEPT ![m] = @ \cup {j}]
+       /\ entryCommitStats' =
+            IF entryKey \in DOMAIN entryCommitStats /\ ~entryCommitStats[entryKey].committed
+            THEN [entryCommitStats EXCEPT ![entryKey].sentCount = @ + 1]
+            ELSE entryCommitStats  
+       /\ Send(message)       
+    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, logVars, maxc, leaderCount, switchBuffer, switchIndex, switchSentRecord, unorderedRequest, netAggIndex, Servers>>  
+
+\* NetAgg receives append entries from Leader, updates it message sent cache and discards the message
+NetAggReceivesAppendEntries(i, m) ==  
+    /\ state[i] = NetAgg
+    /\ state[m.msource] = Leader
+    /\ ~(\E msg \in DOMAIN netAggSentCache: Cardinality(netAggSentCache[msg]) < Cardinality(Servers)-1) \* Accept only when all previous messages have been sent
+    /\ m.mentries /= <<>>
+    /\ netAggSentCache' = netAggSentCache @@ (m :> {})
+    /\ Discard(m)
+    /\ UNCHANGED <<entryCommitStats, serverVars, candidateVars, leaderVars, logVars, maxc, leaderCount,switchBuffer, switchIndex, switchSentRecord, unorderedRequest, netAggIndex, Servers>>  
+
+\* Server i receives an AppendEntries request from server j with
+\* m.mterm <= currentTerm[i]. This just handles m.entries of length 0 or 1, but
+\* implementations could safely accept more by treating them the same as
+\* multiple independent requests of 1 entry.
+HandleAppendEntriesRequest(i, j, m) ==
     LET logOk == \/ m.mprevLogIndex = 0
                  \/ /\ m.mprevLogIndex > 0
                     /\ m.mprevLogIndex <= Len(log[i])
                     /\ m.mprevLogTerm = log[i][m.mprevLogIndex].term
-
-        payloadRequirementMet ==
-            \/ m.mentries = << >> \* Always okay if it's just a heartbeat (no entries)
-            \/ LET receivedValue == m.mentries[1].value \* Get the ID from the leader's metadata entry
-               IN receivedValue \in unorderedRequests[i]  \* Check if this ID is in the follower's buffer
-
     IN /\ m.mterm <= currentTerm[i]
-       /\ i \in Servers             \* Follower 'i' must be a Raft consensus server
-       /\ j \in Servers             \* Leader 'j' must be a Raft consensus server
-
-       /\ \/ /\ \* BRANCH 1: REJECT REQUEST
-                \/ m.mterm < currentTerm[i] \* Stale term
+       /\ \/ /\ \* reject request
+                \/ m.mterm < currentTerm[i]
                 \/ /\ m.mterm = currentTerm[i]
                    /\ state[i] = Follower
-                   /\ \/ ~logOk  \* Raft log consistency failed
-                      \/ (m.mentries /= << >> /\ ~payloadRequirementMet) \* OR, entries present but payload requirement not met
+                   /\ \lnot logOk
              /\ Reply([mtype           |-> AppendEntriesResponse,
                        mterm           |-> currentTerm[i],
                        msuccess        |-> FALSE,
-                       mmatchIndex     |-> 0, \* Or perhaps commitIndex[i] for better leader hints
+                       mmatchIndex     |-> 0,
                        msource         |-> i,
                        mdest           |-> j],
                        m)
-             /\ UNCHANGED <<serverVars, logVars, unorderedRequests>>
-
-          \/ \* BRANCH 2: RETURN TO FOLLOWER STATE (Standard Raft logic)
+             /\ UNCHANGED <<serverVars, logVars, unorderedRequest>>
+          \/ \* return to follower state
              /\ m.mterm = currentTerm[i]
              /\ state[i] = Candidate
              /\ state' = [state EXCEPT ![i] = Follower]
-             /\ UNCHANGED <<currentTerm, votedFor, logVars, messages, unorderedRequests>>
-
-          \/ \* BRANCH 3: ACCEPT REQUEST
+             /\ UNCHANGED <<currentTerm, votedFor, logVars, messages, unorderedRequest>>
+          \/ \* accept request
              /\ m.mterm = currentTerm[i]
              /\ state[i] = Follower
-             /\ logOk                     \* Raft log consistency met
-             /\ payloadRequirementMet     \* AND payload requirement met
+             /\ logOk
              /\ LET index == m.mprevLogIndex + 1
-                     newCommitIndex == Min({ m.mcommitIndex, m.mprevLogIndex + Len(m.mentries) })
-
-                IN \/ \* SUB-BRANCH 3.1: ALREADY DONE / LOG MATCHES
+                IN \/ \* already done with request
                        /\ \/ m.mentries = << >>
                           \/ /\ m.mentries /= << >>
                              /\ Len(log[i]) >= index
                              /\ log[i][index].term = m.mentries[1].term
-                             /\ log[i][index].value = m.mentries[1].value \* Match term and value (ID)
-                       /\ commitIndex' = [commitIndex EXCEPT ![i] = Max({commitIndex[i], newCommitIndex})]
+                          \* This could make our commitIndex decrease (for
+                          \* example if we process an old, duplicated request),
+                          \* but that doesn't really affect anything.
+                       /\ commitIndex' = [commitIndex EXCEPT ![i] =
+                                              m.mcommitIndex]
+\*                       /\ commitIndex' = [commitIndex EXCEPT ![i] = @ + 1]     
+\*                       /\ commitIndex' = [commitIndex EXCEPT ![i] = 
+\*                                            IF commitIndex[i] < m.mcommitIndex THEN 
+\*                                                Min({m.mcommitIndex, Len(log[i])}) 
+\*                                            ELSE 
+\*                                                commitIndex[i]]
                        /\ Reply([mtype           |-> AppendEntriesResponse,
                                  mterm           |-> currentTerm[i],
                                  msuccess        |-> TRUE,
-                                 mmatchIndex     |-> m.mprevLogIndex + Len(m.mentries),
+                                 mmatchIndex     |-> m.mprevLogIndex +
+                                                     Len(m.mentries),
                                  msource         |-> i,
                                  mdest           |-> j],
                                  m)
-                       /\ UNCHANGED <<serverVars, log, unorderedRequests>>
-
-                   \/ \* SUB-BRANCH 3.2: CONFLICT - REMOVE ENTRIES (Standard Raft logic, but reply FALSE)
+                       /\ UNCHANGED <<serverVars, log, unorderedRequest>>
+                   \/ \* conflict: remove 1 entry (simplified from original spec - assumes entry length 1)
+                      \* since we do not send empty entries, we have to provide a larger set of values to ensure some progress
                        /\ m.mentries /= << >>
                        /\ Len(log[i]) >= index
-                       /\ log[i][index].term /= m.mentries[1].term \* Term mismatch
-                       /\ LET newLog == SubSeq(log[i], 1, index - 1)
+                       /\ log[i][index].term /= m.mentries[1].term
+                       /\ LET newLog == SubSeq(log[i], 1, index - 1) \* Truncate log
                           IN log' = [log EXCEPT ![i] = newLog]
-                       /\ Reply([mtype           |-> AppendEntriesResponse,
-                                 mterm           |-> currentTerm[i],
-                                 msuccess        |-> FALSE,
-                                 mmatchIndex     |-> commitIndex[i], \* Hint to leader
-                                 msource         |-> i,
-                                 mdest           |-> j],
-                                 m)
-                       /\ UNCHANGED <<serverVars, commitIndex, unorderedRequests>>
-
-                   \/ \* SUB-BRANCH 3.3: NO CONFLICT - APPEND ENTRY
+\*                       /\ LET new == [index2 \in 1..(Len(log[i]) - 1) |->
+\*                                          log[i][index2]]
+\*                          IN log' = [log EXCEPT ![i] = new]
+                       /\ UNCHANGED <<serverVars, commitIndex, messages, unorderedRequest>>
+                       
+\*                   \/ \* no conflict: append entry
+\*                       /\ m.mentries /= << >>
+\*                       /\ Len(log[i]) = m.mprevLogIndex
+\*                       /\ log' = [log EXCEPT ![i] =
+\*                                      Append(log[i], m.mentries[1])]
+\*                       /\ UNCHANGED <<serverVars, commitIndex, messages>>
+                       
+                   \/ \* no conflict: append entry
                        /\ m.mentries /= << >>
-                       /\ Len(log[i]) = m.mprevLogIndex \* Ready to append at the end
-                       /\ LET entryToAppend == m.mentries[1]
-                              appendedValue == entryToAppend.value \* This is the ID (e.g., "v1")
-                          IN log' = [log EXCEPT ![i] = Append(log[i], entryToAppend)]
-                             /\ unorderedRequests' = [unorderedRequests EXCEPT ![i] = unorderedRequests[i] \ {appendedValue}]
-                             /\ commitIndex' = [commitIndex EXCEPT ![i] = Max({commitIndex[i], newCommitIndex})]
-                             /\ Reply([mtype           |-> AppendEntriesResponse,
-                                       mterm           |-> currentTerm[i],
-                                       msuccess        |-> TRUE,
-                                       mmatchIndex     |-> m.mprevLogIndex + Len(m.mentries),
-                                       msource         |-> i,
-                                       mdest           |-> j],
-                                       m)
-                             /\ UNCHANGED <<serverVars>> \* serverVars includes state, currentTerm, votedFor
+                       /\ \E k \in unorderedRequest[i]: k = m.mentries[1].value
+                       /\ Len(log[i]) = m.mprevLogIndex
+                       /\ LET entryId == CHOOSE id \in DOMAIN switchBuffer: switchBuffer[id].term = m.mentries[1].term /\ switchBuffer[id].value = m.mentries[1].value 
+                              entry == switchBuffer[entryId]
+                          IN /\ log' = [log EXCEPT ![i] = Append(log[i], entry)] \* Add this entry to log, this includes the payload
+                             /\ unorderedRequest' = [unorderedRequest EXCEPT ![i] = @ \ {m.mentries[1].value}]
+                       /\ UNCHANGED <<serverVars, commitIndex, messages>>
+       /\ UNCHANGED <<candidateVars, leaderVars, instrumentationVars, switchBuffer, switchIndex, netAggIndex, switchSentRecord, netAggSentCache, Servers>> \* entryCommitStats unchanged on followers
 
-       \* Note: switchIndex is CONSTANT, hovercraftVars includes switchBuffer, unorderedRequests, switchSentRecord
-       /\ UNCHANGED <<candidateVars, leaderVars, instrumentationVars, switchBuffer, switchSentRecord>>
-
-\* Server i receives an AppendEntries response from server j.
-HandleAppendEntriesResponse(i, j, m) ==
-    /\ i \in Servers
-    /\ j \in Servers
-    /\ m.mterm = currentTerm[i]
+\* NetAgg receives an AppendEntries response from server j with
+\* m.mterm = currentTerm[leader].
+HandleAppendEntriesResponse(agg, j, m) ==
+\*    /\ m.mterm = currentTerm[i]
+    /\ state[agg] = NetAgg
     /\ \/ /\ m.msuccess \* successful
-          /\ LET newMatchIndex == Max({matchIndex[i][j], m.mmatchIndex})
+          /\ LET \*newMatchIndex == IF matchIndex[i][j] > m.mmatchIndex THEN matchIndex[i][j] ELSE m.mmatchIndex
+                 i == CHOOSE s \in Server: state[s] = Leader
+                 newMatchIndex == m.mmatchIndex
                  entryKey == IF newMatchIndex > 0 /\ newMatchIndex <= Len(log[i])
                               THEN <<newMatchIndex, log[i][newMatchIndex].term>>
-                              ELSE <<0, 0>>
-             IN /\ nextIndex'  = [nextIndex  EXCEPT ![i][j] = newMatchIndex + 1]
-                /\ matchIndex' = [matchIndex EXCEPT ![i][j] = newMatchIndex]
-                /\ entryCommitStats' = \* Modifies ackCount
+                              ELSE <<0, 0>> \* Invalid index or empty log
+             IN /\ m.mterm = currentTerm[i]
+                /\ nextIndex'  = [nextIndex  EXCEPT ![i][j] = m.mmatchIndex + 1]
+                /\ matchIndex' = [matchIndex EXCEPT ![i][j] = m.mmatchIndex]
+                \*/\ matchIndex' = [matchIndex EXCEPT ![i][j] = newMatchIndex]
+                /\ entryCommitStats' =
                      IF /\ entryKey /= <<0, 0>>
                         /\ entryKey \in DOMAIN entryCommitStats
                         /\ ~entryCommitStats[entryKey].committed
                      THEN [entryCommitStats EXCEPT ![entryKey].ackCount = @ + 1]
-                     ELSE entryCommitStats
+                     ELSE entryCommitStats                     
        \/ /\ \lnot m.msuccess \* not successful
-          /\ nextIndex' = [nextIndex EXCEPT ![i][j] = Max({nextIndex[i][j] - 1, 1})]
-          /\ UNCHANGED <<matchIndex, entryCommitStats>> \* If not successful, matchIndex and entryCommitStats don't change due to this branch.
+          /\ LET i == CHOOSE s \in Server: state[s] = Leader
+             IN nextIndex' = [nextIndex EXCEPT ![i][j] =
+                               Max({nextIndex[i][j] - 1, 1})]
+          /\ UNCHANGED <<matchIndex, entryCommitStats>>
     /\ Discard(m)
-    \* serverVars, candidateVars, logVars (log, commitIndex)
-    \* maxc, leaderCount are part of instrumentationVars but not changed here.
-    \* hovercraftVars are not changed.
-    /\ UNCHANGED <<serverVars, candidateVars, log, commitIndex, maxc, leaderCount, hovercraftVars>>
+    /\ UNCHANGED <<serverVars, candidateVars, logVars, maxc, leaderCount, hovercraftVars, Servers>>
 
-\* Any RPC with a newer term causes the recipient to advance its term first. (Applies only to Raft Servers)
-UpdateTerm(i, j, m) ==
-    /\ i \in Servers
-    /\ j \in Server \* Sender can be Switch potentially, but recipient must be Raft server
-    /\ m.mterm > currentTerm[i]
-    /\ m.mterm <= MaxTerm
-    /\ currentTerm'    = [currentTerm EXCEPT ![i] = m.mterm]
-    /\ state'          = [state       EXCEPT ![i] = Follower]
-    /\ votedFor'       = [votedFor    EXCEPT ![i] = Nil]
-    /\ UNCHANGED <<messages, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars>>
+\* NetAgg j advances the commit index of the Leader.
+\* This is done as a separate step from handling AppendEntries responses,
+\* in part to minimize atomic regions, and in part so that leaders of
+\* single-server clusters are able to mark entries committed.
+AdvanceCommitIndex(j) ==
+    /\ state[j] = NetAgg
+    /\ LET i == CHOOSE s \in Server: state[s] = Leader
+           \* The set of servers that agree up through index.
+           Agree(index) == {i} \cup {k \in Servers :
+                                         matchIndex[i][k] >= index}
+           \* The maximum indexes for which a quorum agrees
+           agreeIndexes == {index \in 1..Len(log[i]) :
+                                Agree(index) \in Quorum}
+           \* New value for commitIndex'[i]
+           newCommitIndex ==
+              IF /\ agreeIndexes /= {}
+                 /\ log[i][Max(agreeIndexes)].term = currentTerm[i]
+              THEN
+                  Max(agreeIndexes)
+              ELSE
+                  commitIndex[i]
+           committedIndexes == { k \in Nat : /\ k > commitIndex[i]
+                                             /\ k <= newCommitIndex }
+           \* Identify the keys in entryCommitStats corresponding to newly committed entries
+           keysToUpdate == { key \in DOMAIN entryCommitStats : key[1] \in committedIndexes }           
+       IN /\ commitIndex' = [commitIndex EXCEPT ![i] = newCommitIndex]
+          \* Update the 'committed' flag for the relevant entries in entryCommitStats
+          /\ entryCommitStats' =
+               [ key \in DOMAIN entryCommitStats |->
+                   IF key \in keysToUpdate
+                   THEN [ entryCommitStats[key] EXCEPT !.committed = TRUE ] \* Update record
+                   ELSE entryCommitStats[key] ]                             \* Keep old record 
+        \*   /\ PrintT("AdvanceCommitIndex: newCommitIndex=" \o ToString(newCommitIndex))       
+    /\ UNCHANGED <<messages, serverVars, candidateVars, leaderVars, log, maxc, leaderCount, hovercraftVars, Servers>>
 
-\* Responses with stale terms are ignored. (Applies only to Raft Servers)
-DropStaleResponse(i, j, m) ==
-    /\ i \in Servers
-    /\ j \in Server
-    /\ m.mterm < currentTerm[i]
-    /\ Discard(m)
-    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars>>
 
-\* Network state transitions (Optional - Keep if needed for modeling)
+\* Network state transitions
+
+\* The network duplicates a message
 DuplicateMessage(m) ==
     /\ Send(m)
-    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars>>
+    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars, Servers>>
 
+\* The network drops a message
 DropMessage(m) ==
     /\ Discard(m)
-    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars>>
+    /\ UNCHANGED <<serverVars, candidateVars, leaderVars, logVars, instrumentationVars, hovercraftVars, Servers>>
 
 =============================================================================
-Use code with caution.
-Tla
-File 2: raftSpec.tla (Complete & Fixed)
------------------------------- MODULE raftSpec ------------------------------
-\* This is the formal specification for the Raft consensus algorithm.
-\* Modified for HovercRaft design based on professor's instructions.
-
-EXTENDS raftActionsSolution
-
-\* Receive a message. (Handles messages intended FOR Raft servers)
-Receive(m) ==
-    LET i == m.mdest
-        j == m.msource
-    IN /\ i \in Servers \* Receiver must be a Raft Server
-       /\ ( \* Standard Raft message handling
-            \/ UpdateTerm(i, j, m)
-            \/ /\ m.mtype = RequestVoteRequest
-               /\ HandleRequestVoteRequest(i, j, m)
-            \/ /\ m.mtype = RequestVoteResponse
-               /\ \/ DropStaleResponse(i, j, m)
-                  \/ HandleRequestVoteResponse(i, j, m)
-            \/ /\ m.mtype = AppendEntriesRequest
-               /\ HandleAppendEntriesRequest(i, j, m) \* HovercRaft logic inside
-            \/ /\ m.mtype = AppendEntriesResponse
-               /\ \/ DropStaleResponse(i, j, m)
-                  \/ HandleAppendEntriesResponse(i, j, m)
-          )
-
-\* Defines how the variables may transition for the full HovercRaft model.
-Next ==
-       \* --- Standard Raft Leader Election and Timeouts (for Raft Servers) ---
-       \/ \E srv \in Servers : Timeout(srv)
-       \/ \E srv1, srv2 \in Servers : srv1 /= srv2 /\ RequestVote(srv1, srv2)
-       \/ \E srv \in Servers : BecomeLeader(srv)
-
-       \* --- HovercRaft Specific Actions ---
-       \/ \E ldr \in Servers, v \in Value :             \* Client sends to system, Leader informs Switch
-           state[ldr] = Leader /\ SwitchClientRequest(switchIndex, ldr, v)
-
-       \/ \E raftSrv \in Servers, v \in DOMAIN switchBuffer : \* Switch replicates payload to a Raft server
-           SwitchClientRequestReplicate(switchIndex, raftSrv, v)
-
-       \/ \E ldr \in Servers, v \in DOMAIN switchBuffer :      \* Leader ingests metadata from Switch's knowledge
-           state[ldr] = Leader /\ LeaderIngestHovercRaftRequest(ldr, v)
-
-       \* --- Standard Raft Log Replication and Commit (for Raft Servers) ---
-       \/ \E srv \in Servers : AdvanceCommitIndex(srv)
-       \/ \E srv1, srv2 \in Servers : srv1 /= srv2 /\ AppendEntries(srv1, srv2) \* Sends metadata
-
-       \* --- Handling Raft RPC Messages (for Raft Servers) ---
-       \/ \E m \in {msg \in ValidMessage(messages) :
-                msg.mdest \in Servers /\ \* Ensure Raft servers are destinations for Raft messages
-                msg.mtype \in {RequestVoteRequest, RequestVoteResponse,
-                               AppendEntriesRequest, AppendEntriesResponse}} :
-           Receive(m) \* Receive action already filters for msg.mdest \in Servers
-
-       \* --- Optional: Network Unreliability (for Raft messages) ---
-       \* \/ \E m \in {msg \in ValidMessage(messages) : msg.mtype = AppendEntriesRequest } : DuplicateMessage(m)
-       \* \/ \E m \in {msg \in ValidMessage(messages) : msg.mtype = RequestVoteRequest } : DropMessage(m)
-
-\* Next-state relation for testing HovercRaft actions without leader election
-MySwitchNext ==
-   \/ \E ldr \in Servers, v \in Value :
-       state[ldr] = Leader /\ SwitchClientRequest(switchIndex, ldr, v)
-   \/ \E raftSrv \in Servers, v \in DOMAIN switchBuffer :
-       SwitchClientRequestReplicate(switchIndex, raftSrv, v)
-   \/ \E ldr \in Servers, v \in DOMAIN switchBuffer :
-       state[ldr] = Leader /\ LeaderIngestHovercRaftRequest(ldr, v)
-   \/ \E srv \in Servers : AdvanceCommitIndex(srv)
-   \/ \E srv1, srv2 \in Servers : srv1 /= srv2 /\ AppendEntries(srv1, srv2)
-   \/ \E m \in {msg \in ValidMessage(messages) :
-            msg.mdest \in Servers /\ \* Ensure Raft servers are destinations for Raft messages
-            msg.mtype \in {AppendEntriesRequest, AppendEntriesResponse}} :
-       Receive(m)
-
-\* The main specification using the full Next definition
-Spec == Init /\ [][Next]_vars
-
-\* Specification for testing HovercRaft mechanics starting from Init
-MyHovercRaftSpec == Init /\ [][MySwitchNext]_vars
-
-\* Specification for testing HovercRaft mechanics starting from Professor's state
-\* ProfInit == (* ... define the professor's initial state here in raftInit.tla ... *)
-\* ProfHovercRaftSpec == ProfInit /\ [][MySwitchNext]_vars
-
-\* -------------------- Invariants --------------------
-
-\* Fake invariant to check HovercRaft payload replication progress
-\* Becomes FALSE when all Raft servers have buffered all payloads.
-AllServersHaveOneUnorderedRequestInv ==
-    \E s \in Servers : Cardinality(unorderedRequests[s]) /= Cardinality(Value)
-
-\* Fake invariant to check Raft commit progress
-\* Becomes FALSE when the first commit occurs (commitIndex > 0).
-NoRaftServerHasCommittedYet ==
-    \A srv \in Servers : commitIndex[srv] = 0
-
-\* ---- Standard Raft Safety Invariants (Scoped to Raft Servers) ----
-
-MoreThanOneLeaderInv ==
-    \A i,j \in Servers :
-        (/\ currentTerm[i] = currentTerm[j]
-         /\ state[i] = Leader
-         /\ state[j] = Leader)
-        => i = j
-
-LogMatchingInv ==
-    \A i, j \in Servers : i /= j =>
-        \A n \in 1..min(Len(log[i]), Len(log[j])) :
-            log[i][n].term = log[j][n].term =>
-            SubSeq(log[i],1,n) = SubSeq(log[j],1,n)
-
-LeaderCompletenessInv ==
-    \A i \in Servers :
-        state[i] = Leader =>
-        \A j \in Servers : i /= j =>
-            CheckIsPrefix(CommittedTermPrefix(j, currentTerm[i]),log[i])
-
-LogInv ==
-    \A i, j \in Servers :
-        \/ CheckIsPrefix(Committed(i),Committed(j))
-        \/ CheckIsPrefix(Committed(j),Committed(i))
-
-THEOREM Spec => ([]LogInv /\ []LeaderCompletenessInv /\ []LogMatchingInv /\ []MoreThanOneLeaderInv)
-
-=============================================================================
-Use code with caution.
-Tla
-Key Changes Made Summary:
-raftActionsSolution.tla: Added hovercraftVars to the UNCHANGED clause of all standard Raft actions (Restart, Timeout, RequestVote, AppendEntries, BecomeLeader, AdvanceCommitIndex, HandleRequestVote*, HandleAppendEntriesResponse, UpdateTerm, Drop*, Duplicate*). Cleaned up the final UNCHANGED clause in HandleAppendEntriesRequest. Added scoping (\in Servers) where appropriate to actions that should only involve Raft consensus members.
-raftSpec.tla: Defined a comprehensive Next operator including both Raft leader election (scoped to Servers) and the HovercRaft actions. Defined Spec using this Next. Kept MySwitchNext and MyHovercRaftSpec for focused testing. Correctly scoped the standard Raft safety invariants to use Servers. Added the NoRaftServerHasCommittedYet invariant. Cleaned up comments and structure.
-This should provide a complete and corrected version based on the professor's design and fixing the UNCHANGED errors.
-=============================================================================
+\* Created by Ovidiu-Cristian Marcu
